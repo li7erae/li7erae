@@ -151,6 +151,7 @@ body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;fo
 .fade-in{animation:fadeIn 0.45s ease both;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 </style>
+  <script type="module" src="/auth-guard.js"></script>
 </head>
 <body>
 <aside class="sidebar">
@@ -172,9 +173,9 @@ body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;fo
     <a class="nav-item" href="#"><span class="nav-icon">🏛️</span> Minha Associação</a>
   </div>
   <div class="sidebar-spacer"></div>
-  <div class="sidebar-user">
-    <div class="user-avatar-sm">AN</div>
-    <div><div class="user-name-sm">Ana Nóbrega</div><div class="user-role-sm">Plano Profissional</div></div>
+  <div class="sidebar-user" onclick="li7Logout()" title="Clique para sair" style="cursor:pointer">
+    <div class="user-avatar-sm" data-user-avatar>?</div>
+    <div><div class="user-name-sm" data-user-name>Carregando...</div><div class="user-role-sm" data-user-role>Membro</div></div>
   </div>
 </aside>
 

@@ -169,6 +169,7 @@ body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;fo
 .fade-in{animation:fadeIn 0.5s ease both;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 </style>
+  <script type="module" src="/auth-guard.js"></script>
 </head>
 <body>
 
@@ -193,11 +194,11 @@ body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;fo
     <a class="nav-item" href="#"><span class="nav-icon">🗓️</span> Eventos</a>
   </div>
   <div class="sidebar-spacer"></div>
-  <div class="sidebar-user">
-    <div class="user-avatar">AN</div>
+  <div class="sidebar-user" onclick="li7Logout()" title="Clique para sair" style="cursor:pointer">
+    <div class="user-avatar" data-user-avatar>?</div>
     <div>
-      <div class="user-name">Ana Nóbrega</div>
-      <div class="user-role">Plano Profissional</div>
+      <div class="user-name" data-user-name>Carregando...</div>
+      <div class="user-role" data-user-role>Membro</div>
     </div>
   </div>
 </aside>

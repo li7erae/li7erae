@@ -81,6 +81,8 @@ tr:hover td{background:rgba(0,180,255,0.03);color:var(--text)}
 .fade-in{animation:fadeIn 0.5s ease both}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 </style>
+  <script>window.LI7_ADMIN_ONLY = true;</script>
+  <script type="module" src="/auth-guard.js"></script>
 </head>
 <body>
 <aside class="sidebar">
@@ -106,9 +108,9 @@ tr:hover td{background:rgba(0,180,255,0.03);color:var(--text)}
     <a class="nav-item" href="login.html"><span class="nav-icon">🔐</span>Login</a>
   </div>
   <div class="sidebar-spacer"></div>
-  <div class="sidebar-user">
-    <div class="user-avatar">AD</div>
-    <div><div class="user-name">Administrador</div><div class="user-role">Super Admin</div></div>
+  <div class="sidebar-user" onclick="li7Logout()" title="Clique para sair" style="cursor:pointer">
+    <div class="user-avatar" data-user-avatar>?</div>
+    <div><div class="user-name" data-user-name>Carregando...</div><div class="user-role" data-user-role>Admin</div></div>
   </div>
 </aside>
 <div class="main">

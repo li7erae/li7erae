@@ -127,6 +127,8 @@ body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;fo
 .fade-in:nth-child(4){animation-delay:0.15s;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 </style>
+  <script>window.LI7_ADMIN_ONLY = true;</script>
+  <script type="module" src="/auth-guard.js"></script>
 </head>
 <body>
 <aside class="sidebar">
@@ -152,9 +154,9 @@ body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;fo
     <a class="nav-item" href="#"><span class="nav-icon">⚙️</span> Configurações</a>
   </div>
   <div class="sidebar-spacer"></div>
-  <div class="sidebar-user">
-    <div class="user-avatar">CA</div>
-    <div><div class="user-name">Carlos Alves</div><div class="user-role">Super Admin</div></div>
+  <div class="sidebar-user" onclick="li7Logout()" title="Clique para sair" style="cursor:pointer">
+    <div class="user-avatar" data-user-avatar>?</div>
+    <div><div class="user-name" data-user-name>Carregando...</div><div class="user-role" data-user-role>Admin</div></div>
   </div>
 </aside>
 

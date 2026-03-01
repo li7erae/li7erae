@@ -16,25 +16,18 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
 body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;font-weight:300;display:flex;min-height:100vh}
-
-/* CIRCUIT BG */
 body::before{content:'';position:fixed;inset:0;background:
   radial-gradient(ellipse 60% 60% at 10% 50%,rgba(0,180,255,0.06) 0%,transparent 60%),
   radial-gradient(ellipse 40% 40% at 90% 20%,rgba(245,166,35,0.04) 0%,transparent 50%);
   pointer-events:none;z-index:0}
-
-/* LEFT */
 .left{width:48%;background:var(--dark);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:52px;position:relative;overflow:hidden}
 .left-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,180,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,180,255,0.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
-/* Circuit SVG */
 .left-circuit{position:absolute;inset:0;opacity:0.12;pointer-events:none}
 .left-content{position:relative;z-index:2;display:flex;flex-direction:column;height:100%}
-
 .logo{display:flex;align-items:center;gap:14px;text-decoration:none;margin-bottom:auto}
 .logo-icon{width:42px;height:42px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:22px;color:#000;clip-path:polygon(8px 0%,calc(100% - 8px) 0%,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0% calc(100% - 8px),0% 8px);box-shadow:0 0 20px var(--gold-glow)}
 .logo-text{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;letter-spacing:0.1em}
 .logo-text span{color:var(--gold)}
-
 .left-hero{flex:1;display:flex;flex-direction:column;justify-content:center}
 .left-eyebrow{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:12px}
 .left-eyebrow::before{content:'';width:32px;height:1px;background:var(--blue)}
@@ -43,23 +36,17 @@ body::before{content:'';position:fixed;inset:0;background:
 .left-title .t2{color:var(--blue);display:block;text-shadow:0 0 30px var(--blue-glow)}
 .left-title .t3{color:var(--gold);display:block;text-shadow:0 0 30px var(--gold-glow)}
 .left-desc{font-size:15px;line-height:1.8;color:var(--text-mid);max-width:380px}
-
 .left-stats{display:flex;gap:40px;margin-top:48px;padding-top:32px;border-top:1px solid var(--line)}
 .stat-n{font-family:'Rajdhani',sans-serif;font-size:34px;font-weight:700;color:var(--blue);display:block;line-height:1;text-shadow:0 0 16px var(--blue-glow)}
 .stat-n.gold{color:var(--gold);text-shadow:0 0 16px var(--gold-glow)}
 .stat-l{font-size:10px;color:var(--text-dim);letter-spacing:0.12em;text-transform:uppercase;margin-top:4px;display:block}
-
-/* RIGHT */
 .right{flex:1;display:flex;align-items:center;justify-content:center;padding:48px;position:relative;z-index:1}
 .form-box{width:100%;max-width:420px}
-
 .tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:40px}
 .tab{flex:1;padding:14px;text-align:center;font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.25s;font-family:'Rajdhani',sans-serif}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
-
 .form-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;margin-bottom:6px}
 .form-sub{font-size:13px;color:var(--text-mid);margin-bottom:32px}
-
 .form-group{margin-bottom:18px}
 .form-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);font-weight:600;display:block;margin-bottom:9px;font-family:'Rajdhani',sans-serif}
 .form-input{width:100%;background:var(--dark2);border:1px solid var(--line);color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;font-weight:300;padding:13px 16px;outline:none;transition:border-color 0.25s}
@@ -71,22 +58,17 @@ body::before{content:'';position:fixed;inset:0;background:
 .forgot{text-align:right;margin-top:-10px;margin-bottom:18px}
 .forgot a{font-size:12px;color:var(--blue);text-decoration:none;opacity:0.8}
 .forgot a:hover{opacity:1}
-
 .btn-submit{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:#000;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.3s;box-shadow:0 0 20px var(--gold-glow);clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
 .btn-submit:hover{box-shadow:0 0 32px var(--gold-glow);transform:translateY(-1px)}
-
+.btn-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none}
 .divider{display:flex;align-items:center;gap:14px;margin:24px 0}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line)}
 .divider span{font-size:11px;color:var(--text-dim);letter-spacing:0.1em}
-
 .social-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .social-btn{padding:11px;background:var(--dark2);border:1px solid var(--line);color:var(--text-mid);font-family:'Exo 2',sans-serif;font-size:12px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all 0.2s}
 .social-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-dim)}
-
 .form-switch{text-align:center;margin-top:24px;font-size:13px;color:var(--text-dim)}
 .form-switch a{color:var(--gold);text-decoration:none;font-weight:600}
-
-/* Plan select */
 .plan-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
 .plan-opt{display:flex;align-items:center;gap:14px;padding:13px 16px;background:var(--dark2);border:1px solid var(--line);cursor:pointer;transition:all 0.2s}
 .plan-opt:hover,.plan-opt.sel{border-color:rgba(0,180,255,0.5);background:var(--blue-dim)}
@@ -98,11 +80,16 @@ body::before{content:'';position:fixed;inset:0;background:
 .plan-price{font-size:11px;color:var(--text-dim)}
 .plan-badge{margin-left:auto;font-size:9px;background:var(--gold);color:#000;padding:2px 8px;font-weight:700;letter-spacing:0.1em;font-family:'Rajdhani',sans-serif}
 
+/* MENSAGEM DE ERRO/SUCESSO */
+.msg{padding:12px 16px;font-size:13px;margin-bottom:16px;display:none;border-left:3px solid}
+.msg.error{background:rgba(255,82,82,0.1);border-color:var(--red);color:#ff8a80;}
+.msg.success{background:rgba(0,230,118,0.1);border-color:var(--green);color:#69f0ae;}
+.msg.show{display:block}
+
 .panel{animation:panelIn 0.5s ease both}
 @keyframes panelIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .form-panel{display:none}
 .form-panel.active{display:block;animation:panelIn 0.35s ease both}
-
 @media(max-width:768px){.left{display:none}.right{padding:32px 24px}}
 </style>
 </head>
@@ -124,7 +111,7 @@ body::before{content:'';position:fixed;inset:0;background:
   </svg>
   <div class="left-grid"></div>
   <div class="left-content">
-    <a class="logo" href="index.html">
+    <a class="logo" href="/">
       <div class="logo-icon">7</div>
       <div class="logo-text">LI<span>7</span>ERAE</div>
     </a>
@@ -152,12 +139,14 @@ body::before{content:'';position:fixed;inset:0;background:
       <div class="tab" onclick="switchTab('register')">Criar conta</div>
     </div>
 
+    <!-- PAINEL LOGIN -->
     <div class="form-panel active" id="panel-login">
       <div class="form-title">Entrar na plataforma</div>
       <div class="form-sub">Insira suas credenciais para continuar</div>
+      <div class="msg" id="msg-login"></div>
       <div class="form-group">
         <label class="form-label">E-mail</label>
-        <input class="form-input" type="email" placeholder="seu@email.com">
+        <input class="form-input" type="email" id="login-email" placeholder="seu@email.com">
       </div>
       <div class="form-group">
         <label class="form-label">Senha</label>
@@ -166,26 +155,28 @@ body::before{content:'';position:fixed;inset:0;background:
           <button class="input-eye" onclick="togglePwd('pwd1')">👁</button>
         </div>
       </div>
-      <div class="forgot"><a href="#">Esqueceu a senha?</a></div>
-      <button class="btn-submit" onclick="simulateLogin(this)">Entrar na plataforma →</button>
+      <div class="forgot"><a href="#" onclick="forgotPassword()">Esqueceu a senha?</a></div>
+      <button class="btn-submit" id="btn-login" onclick="doLogin()">Entrar na plataforma →</button>
       <div class="divider"><span>ou continue com</span></div>
       <div class="social-btns">
-        <div class="social-btn">🔷 Google</div>
-        <div class="social-btn">🔗 LinkedIn</div>
+        <div class="social-btn" onclick="loginGoogle()">🔷 Google</div>
+        <div class="social-btn" onclick="showMsg('msg-login','LinkedIn não configurado ainda','error')">🔗 LinkedIn</div>
       </div>
       <div class="form-switch">Não tem conta? <a href="#" onclick="switchTab('register')">Criar grátis</a></div>
     </div>
 
+    <!-- PAINEL CADASTRO -->
     <div class="form-panel" id="panel-register">
       <div class="form-title">Criar sua conta</div>
       <div class="form-sub">Junte-se a mais de 12 mil profissionais</div>
+      <div class="msg" id="msg-register"></div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Nome</label><input class="form-input" type="text" placeholder="Nome"></div>
-        <div class="form-group"><label class="form-label">Sobrenome</label><input class="form-input" type="text" placeholder="Sobrenome"></div>
+        <div class="form-group"><label class="form-label">Nome</label><input class="form-input" type="text" id="reg-nome" placeholder="Nome"></div>
+        <div class="form-group"><label class="form-label">Sobrenome</label><input class="form-input" type="text" id="reg-sobrenome" placeholder="Sobrenome"></div>
       </div>
       <div class="form-group">
         <label class="form-label">E-mail</label>
-        <input class="form-input" type="email" placeholder="seu@email.com">
+        <input class="form-input" type="email" id="reg-email" placeholder="seu@email.com">
       </div>
       <div class="form-group">
         <label class="form-label">Senha</label>
@@ -197,39 +188,186 @@ body::before{content:'';position:fixed;inset:0;background:
       <div class="form-group">
         <label class="form-label">Escolha seu plano</label>
         <div class="plan-grid">
-          <div class="plan-opt" onclick="selPlan(this)">
+          <div class="plan-opt" onclick="selPlan(this,'essential')" data-plan="essential">
             <div class="plan-radio"></div>
             <div><div class="plan-name">Essencial</div><div class="plan-price">R$ 49/mês · 50+ cursos</div></div>
           </div>
-          <div class="plan-opt sel" onclick="selPlan(this)">
+          <div class="plan-opt sel" onclick="selPlan(this,'professional')" data-plan="professional">
             <div class="plan-radio"></div>
             <div><div class="plan-name">Profissional</div><div class="plan-price">R$ 149/mês · Acesso ilimitado</div></div>
             <div class="plan-badge">Popular</div>
           </div>
-          <div class="plan-opt" onclick="selPlan(this)">
+          <div class="plan-opt" onclick="selPlan(this,'association')" data-plan="association">
             <div class="plan-radio"></div>
             <div><div class="plan-name">Associação</div><div class="plan-price">R$ 499/mês · Gestão completa</div></div>
           </div>
         </div>
       </div>
-      <button class="btn-submit" onclick="simulateLogin(this)">Criar minha conta →</button>
+      <button class="btn-submit" id="btn-register" onclick="doRegister()">Criar minha conta →</button>
       <div class="form-switch">Já tem conta? <a href="#" onclick="switchTab('login')">Entrar</a></div>
     </div>
   </div>
 </div>
 
+<script type="module">
+  // ====================================================
+  //  CONFIGURAÇÃO DO SUPABASE
+  //  ⚠️ Substitua os valores abaixo pelos do seu projeto
+  //  Supabase → Settings → API
+  // ====================================================
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  const SUPABASE_URL  = 'https://edoozioyoyvxthzuyduo.supabase.co';
+  const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkb296aW95b3l2eHRoenV5ZHVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzOTY5NDAsImV4cCI6MjA4Nzk3Mjk0MH0.SmlVBnq9Rr4E96u--R3bD_u7PwWsr8G6RmXL2M848t4';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Expõe as funções para os onclick do HTML
+  window.supabase = supabase;
+
+  // Se já estiver logado, redireciona direto
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session) redirectByRole(session.user);
+  });
+
+  // ── LOGIN ──────────────────────────────────────────
+  window.doLogin = async function() {
+    const email = document.getElementById('login-email').value.trim();
+    const senha = document.getElementById('pwd1').value;
+    const btn   = document.getElementById('btn-login');
+
+    if (!email || !senha) return showMsg('msg-login', 'Preencha e-mail e senha!', 'error');
+
+    btn.disabled = true;
+    btn.textContent = 'Entrando...';
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
+
+    if (error) {
+      showMsg('msg-login', traduzirErro(error.message), 'error');
+      btn.disabled = false;
+      btn.textContent = 'Entrar na plataforma →';
+    } else {
+      btn.textContent = '✓ Acesso liberado!';
+      btn.style.background = '#00E676';
+      setTimeout(() => redirectByRole(data.user), 800);
+    }
+  }
+
+  // ── CADASTRO ───────────────────────────────────────
+  window.doRegister = async function() {
+    const nome      = document.getElementById('reg-nome').value.trim();
+    const sobrenome = document.getElementById('reg-sobrenome').value.trim();
+    const email     = document.getElementById('reg-email').value.trim();
+    const senha     = document.getElementById('pwd2').value;
+    const planEl    = document.querySelector('.plan-opt.sel');
+    const plano     = planEl ? planEl.dataset.plan : 'essential';
+    const btn       = document.getElementById('btn-register');
+
+    if (!nome || !email || !senha) return showMsg('msg-register', 'Preencha todos os campos!', 'error');
+    if (senha.length < 8) return showMsg('msg-register', 'A senha precisa ter pelo menos 8 caracteres.', 'error');
+
+    btn.disabled = true;
+    btn.textContent = 'Criando conta...';
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password: senha,
+      options: {
+        data: { full_name: `${nome} ${sobrenome}`.trim(), plan: plano }
+      }
+    });
+
+    if (error) {
+      showMsg('msg-register', traduzirErro(error.message), 'error');
+      btn.disabled = false;
+      btn.textContent = 'Criar minha conta →';
+    } else {
+      // Cria o perfil na tabela profiles
+      if (data.user) {
+        await supabase.from('profiles').upsert({
+          id: data.user.id,
+          full_name: `${nome} ${sobrenome}`.trim(),
+          email: email,
+          role: 'student',
+          plan: plano
+        });
+      }
+      showMsg('msg-register', '✓ Conta criada! Verifique seu e-mail para confirmar.', 'success');
+      btn.textContent = '✓ Quase lá! Confirme o e-mail';
+      btn.style.background = '#00E676';
+    }
+  }
+
+  // ── GOOGLE ─────────────────────────────────────────
+  window.loginGoogle = async function() {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/area' }
+    });
+  }
+
+  // ── ESQUECEU A SENHA ───────────────────────────────
+  window.forgotPassword = async function() {
+    const email = document.getElementById('login-email').value.trim();
+    if (!email) return showMsg('msg-login', 'Digite seu e-mail acima primeiro!', 'error');
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/login'
+    });
+
+    if (error) showMsg('msg-login', traduzirErro(error.message), 'error');
+    else showMsg('msg-login', '✓ E-mail de recuperação enviado! Cheque sua caixa.', 'success');
+  }
+
+  // ── REDIRECIONA POR PERFIL ─────────────────────────
+  async function redirectByRole(user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    const role = profile?.role || 'student';
+    if (role === 'admin') window.location.href = '/admin';
+    else window.location.href = '/area';
+  }
+
+  // ── TRADUZ ERROS DO SUPABASE ───────────────────────
+  function traduzirErro(msg) {
+    const erros = {
+      'Invalid login credentials': 'E-mail ou senha incorretos.',
+      'Email not confirmed': 'Confirme seu e-mail antes de entrar.',
+      'User already registered': 'Este e-mail já está cadastrado.',
+      'Password should be at least 6 characters': 'A senha precisa ter pelo menos 6 caracteres.',
+      'signup is disabled': 'Cadastros temporariamente desativados.',
+    };
+    return erros[msg] || msg;
+  }
+</script>
+
 <script>
+// Estas funções ficam fora do module pois são usadas nos onclick
 function switchTab(t){
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.textContent.toLowerCase().includes(t==='login'?'entrar':'criar')));
   document.querySelectorAll('.form-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+t).classList.add('active');
+  document.querySelectorAll('.msg').forEach(m=>{m.classList.remove('show');});
 }
 function togglePwd(id){const e=document.getElementById(id);e.type=e.type==='password'?'text':'password'}
 function selPlan(el){document.querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('sel'));el.classList.add('sel')}
-function simulateLogin(btn){
-  btn.textContent='Verificando...';btn.style.opacity='0.7';
-  setTimeout(()=>{btn.textContent='✓ Acesso liberado!';btn.style.background='var(--green)';btn.style.color='#000';},1200);
+function showMsg(id,text,type){
+  const el=document.getElementById(id);
+  el.textContent=text;
+  el.className='msg '+type+' show';
 }
+// Enter para enviar
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'){
+    const active=document.querySelector('.form-panel.active');
+    if(active.id==='panel-login') window.doLogin && window.doLogin();
+    else window.doRegister && window.doRegister();
+  }
+});
 </script>
 </body>
 </html>
