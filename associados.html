@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Li7erae — Gestão de Associados</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#00B4FF;--blue-dim:rgba(0,180,255,0.12);--blue-glow:rgba(0,180,255,0.28);
+  --gold:#F5A623;--gold-bright:#FFB940;--gold-dim:rgba(245,166,35,0.14);--gold-glow:rgba(245,166,35,0.4);
+  --green:#00E676;--green-dim:rgba(0,230,118,0.1);--red:#FF5252;--red-dim:rgba(255,82,82,0.1);
+  --purple:#BB86FC;
+  --black:#050810;--dark:#080D18;--dark2:#0D1525;--dark3:#121D30;--dark4:#162038;
+  --text:#E8F4FF;--text-mid:#8AADCC;--text-dim:#3D5570;
+  --line:rgba(0,180,255,0.1);--line-gold:rgba(245,166,35,0.18);
+  --gold-line:rgba(245,166,35,0.18);--gold-light:#FFB940;
+  --sidebar-w:240px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{overflow:hidden;}
+body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;font-weight:300;display:flex;height:100vh;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#333;border-radius:2px;}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--dark);border-right:1px solid var(--gold-line);display:flex;flex-direction:column;height:100vh;overflow-y:auto;}
+.sidebar-logo{padding:26px 22px 22px;border-bottom:1px solid rgba(201,169,110,0.08);}
+.logo-text{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:500;letter-spacing:0.06em;color:var(--text);text-decoration:none;}
+.logo-text span{color:var(--gold);}
+.logo-sub{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-dim);margin-top:4px;}
+.sidebar-section{padding:18px 14px 6px;}
+.sidebar-section-label{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim);font-weight:500;padding:0 8px;margin-bottom:5px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;color:var(--text-dim);font-size:13px;font-weight:400;cursor:pointer;transition:all 0.2s;position:relative;text-decoration:none;margin-bottom:2px;}
+.nav-item:hover{color:var(--text-mid);background:rgba(255,255,255,0.03);}
+.nav-item.active{color:var(--gold);background:rgba(201,169,110,0.07);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;background:var(--gold);}
+.nav-icon{width:18px;text-align:center;font-size:14px;}
+.nav-badge{margin-left:auto;background:var(--gold);color:var(--black);font-size:9px;font-weight:700;padding:2px 7px;}
+.sidebar-spacer{flex:1;}
+.sidebar-user{padding:14px;border-top:1px solid rgba(201,169,110,0.08);display:flex;align-items:center;gap:10px;}
+.user-avatar{width:34px;height:34px;background:linear-gradient(135deg,#8B6A35,var(--gold));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--black);flex-shrink:0;}
+.user-name{font-size:12px;font-weight:500;}
+.user-role{font-size:10px;color:var(--text-dim);}
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.view{display:none;flex:1;flex-direction:column;overflow:hidden;}
+.view.active{display:flex;}
+.topbar{height:60px;border-bottom:1px solid var(--gold-line);display:flex;align-items:center;padding:0 28px;gap:14px;flex-shrink:0;background:var(--dark);}
+.topbar-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:400;}
+.topbar-sub{font-size:11px;color:var(--text-dim);margin-top:2px;}
+.topbar-spacer{flex:1;}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--dark2);border:1px solid rgba(201,169,110,0.12);padding:7px 14px;width:220px;}
+.search-box input{background:none;border:none;outline:none;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;width:100%;}
+.search-box input::placeholder{color:var(--text-dim);}
+.btn-new{padding:9px 22px;background:var(--gold);color:var(--black);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.25s;}
+.btn-new:hover{background:#E8D5A3;}
+.filter-tabs{display:flex;border:1px solid rgba(201,169,110,0.12);}
+.filter-tab{padding:7px 16px;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;transition:all 0.2s;border-right:1px solid rgba(201,169,110,0.1);background:none;}
+.filter-tab:last-child{border-right:none;}
+.filter-tab.active,.filter-tab:hover{background:var(--gold-dim);color:var(--gold);}
+
+/* LIST */
+.list-content{flex:1;overflow-y:auto;padding:24px 28px;}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.kpi{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);padding:20px 22px;transition:border-color 0.3s;}
+.kpi:hover{border-color:rgba(201,169,110,0.3);}
+.kpi-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);font-weight:500;margin-bottom:10px;}
+.kpi-value{font-family:'Rajdhani',sans-serif;font-size:38px;font-weight:300;color:var(--text);line-height:1;}
+.kpi-change{font-size:11px;margin-top:6px;}
+.kpi-change.up{color:var(--green);}
+.kpi-change.down{color:var(--red);}
+
+.members-table{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);}
+.mt-header{display:grid;grid-template-columns:2.5fr 1.5fr 1fr 1fr 1fr 100px;padding:12px 20px;border-bottom:1px solid rgba(201,169,110,0.08);}
+.mt-head{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);font-weight:500;}
+.mt-head:last-child{text-align:right;}
+.mt-row{display:grid;grid-template-columns:2.5fr 1.5fr 1fr 1fr 1fr 100px;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background 0.15s;align-items:center;}
+.mt-row:last-child{border-bottom:none;}
+.mt-row:hover{background:rgba(255,255,255,0.025);}
+.mt-user{display:flex;align-items:center;gap:12px;}
+.mt-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--black);flex-shrink:0;}
+.mt-name{font-size:13px;font-weight:500;color:var(--text);}
+.mt-email{font-size:11px;color:var(--text-dim);margin-top:1px;}
+.mt-cell{font-size:13px;color:var(--text-mid);}
+.mt-actions{display:flex;gap:6px;justify-content:flex-end;}
+.act-btn{width:28px;height:28px;border:1px solid rgba(201,169,110,0.15);background:none;color:var(--text-dim);font-size:12px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+.act-btn:hover{border-color:rgba(201,169,110,0.5);color:var(--gold);}
+.status-pill{display:inline-block;padding:3px 10px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;}
+.status-pill.ativo{background:rgba(76,175,125,0.12);color:var(--green);}
+.status-pill.pendente{background:rgba(201,169,110,0.12);color:var(--gold);}
+.status-pill.inativo{background:rgba(224,85,85,0.1);color:var(--red);}
+
+/* PROFILE PANEL */
+.profile-panel{width:380px;min-width:380px;background:var(--dark);border-left:1px solid var(--gold-line);display:flex;flex-direction:column;overflow-y:auto;transition:transform 0.3s;}
+.profile-panel.hidden{transform:translateX(100%);width:0;min-width:0;overflow:hidden;}
+.pp-header{padding:24px;border-bottom:1px solid rgba(201,169,110,0.08);position:relative;}
+.pp-close{position:absolute;top:20px;right:20px;background:none;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;}
+.pp-avatar{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--black);margin-bottom:14px;}
+.pp-name{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:500;margin-bottom:4px;}
+.pp-role{font-size:12px;color:var(--text-dim);margin-bottom:12px;}
+.pp-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.pp-badge{font-size:10px;padding:3px 10px;letter-spacing:0.1em;font-weight:500;}
+.pp-badge.plan{background:var(--gold-dim);color:var(--gold);}
+.pp-badge.assoc{background:rgba(91,141,217,0.12);color:var(--blue);}
+.pp-section{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.pp-section-title{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:14px;}
+.pp-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;}
+.pp-row:last-child{border-bottom:none;}
+.pp-row-label{color:var(--text-dim);}
+.pp-row-val{color:var(--text);font-weight:400;}
+.pp-courses{display:flex;flex-direction:column;gap:8px;}
+.pp-course-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--dark3);}
+.pp-course-icon{font-size:18px;}
+.pp-course-name{font-size:12px;color:var(--text);font-weight:400;}
+.pp-course-prog{font-size:11px;color:var(--text-dim);}
+.pp-course-bar{height:2px;background:rgba(255,255,255,0.08);margin-top:4px;}
+.pp-course-fill{height:100%;background:var(--gold);}
+.pp-actions{padding:20px 24px;display:flex;flex-direction:column;gap:10px;}
+.btn-action{padding:11px;border:1px solid rgba(201,169,110,0.25);background:none;color:var(--text-mid);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-action:hover{border-color:rgba(201,169,110,0.5);color:var(--gold);}
+.btn-action.danger:hover{border-color:rgba(224,85,85,0.5);color:var(--red);}
+.btn-action.primary{background:var(--gold);color:var(--black);border-color:var(--gold);}
+.btn-action.primary:hover{background:#E8D5A3;}
+
+/* INVITE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--dark);border:1px solid rgba(201,169,110,0.2);max-width:520px;width:100%;position:relative;animation:mIn 0.3s ease both;}
+@keyframes mIn{from{transform:translateY(20px);opacity:0;}to{transform:none;opacity:1;}}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.modal-body{padding:32px;}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:500;margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--text-dim);margin-bottom:28px;}
+.field{margin-bottom:18px;}
+.field-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);font-weight:500;display:block;margin-bottom:8px;}
+.field-input{width:100%;background:var(--dark3);border:1px solid rgba(201,169,110,0.15);color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:300;padding:11px 14px;outline:none;transition:border-color 0.2s;}
+.field-input:focus{border-color:rgba(201,169,110,0.45);}
+.field-select{appearance:none;cursor:pointer;}
+.modal-footer{display:flex;gap:12px;padding-top:8px;}
+.btn-cancel{flex:1;padding:13px;border:1px solid rgba(201,169,110,0.2);background:none;color:var(--text-dim);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.btn-cancel:hover{border-color:rgba(201,169,110,0.4);color:var(--text);}
+.btn-confirm{flex:1;padding:13px;background:var(--gold);color:var(--black);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.3s;}
+.btn-confirm:hover{background:#E8D5A3;}
+
+.fade-in{animation:fadeIn 0.45s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a class="logo-wrap" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none"><div style="width:32px;height:32px;background:#F5A623;display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-weight:700;font-size:16px;color:#000;clip-path:polygon(5px 0%,calc(100% - 5px) 0%,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0% calc(100% - 5px),0% 5px);box-shadow:0 0 12px rgba(245,166,35,0.4)">7</div><span style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;letter-spacing:0.1em;color:#E8F4FF">LI<span style=color:#F5A623>7</span>ERAE</span></a>
+    <div class="logo-sub">Painel Administrativo</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Principal</div>
+    <a class="nav-item" href="#"><span class="nav-icon">⬡</span> Visão Geral</a>
+    <a class="nav-item" href="#"><span class="nav-icon">📊</span> Analytics</a>
+    <a class="nav-item" href="#"><span class="nav-icon">💰</span> Financeiro</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Gestão</div>
+    <a class="nav-item active" href="#"><span class="nav-icon">👥</span> Associados <span class="nav-badge">12</span></a>
+    <a class="nav-item" href="#"><span class="nav-icon">🏛️</span> Associações</a>
+    <a class="nav-item" href="#"><span class="nav-icon">🎓</span> Cursos</a>
+    <a class="nav-item" href="#"><span class="nav-icon">📜</span> Certificados</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Sistema</div>
+    <a class="nav-item" href="#"><span class="nav-icon">⚙️</span> Configurações</a>
+    <a class="nav-item" href="#"><span class="nav-icon">🔔</span> Notificações</a>
+  </div>
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-user">
+    <div class="user-avatar">CA</div>
+    <div><div class="user-name">Carlos Alves</div><div class="user-role">Super Admin</div></div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="view active" id="view-list">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Gestão de Associados</div>
+        <div class="topbar-sub">12.480 membros cadastrados</div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="filter-tabs">
+        <div class="filter-tab active">Todos</div>
+        <div class="filter-tab">Ativos</div>
+        <div class="filter-tab">Pendentes</div>
+        <div class="filter-tab">Inativos</div>
+      </div>
+      <div class="search-box">
+        <span style="color:var(--text-dim);font-size:13px;">🔍</span>
+        <input type="text" placeholder="Buscar por nome ou e-mail...">
+      </div>
+      <button class="btn-new" onclick="openInvite()">＋ Convidar</button>
+    </div>
+    <div style="display:flex;flex:1;overflow:hidden;">
+      <div class="list-content" style="flex:1;">
+        <div class="kpi-row fade-in">
+          <div class="kpi"><div class="kpi-label">Total de membros</div><div class="kpi-value">12.480</div><div class="kpi-change up">↑ 9,2% este mês</div></div>
+          <div class="kpi"><div class="kpi-label">Ativos</div><div class="kpi-value">10.842</div><div class="kpi-change up">↑ 87% do total</div></div>
+          <div class="kpi"><div class="kpi-label">Inadimplentes</div><div class="kpi-value">348</div><div class="kpi-change down">↑ 2,8%</div></div>
+          <div class="kpi"><div class="kpi-label">Novos (mês)</div><div class="kpi-value">347</div><div class="kpi-change up">↑ vs 317 anterior</div></div>
+        </div>
+        <div class="members-table fade-in">
+          <div class="mt-header">
+            <div class="mt-head">Membro</div>
+            <div class="mt-head">Associação</div>
+            <div class="mt-head">Plano</div>
+            <div class="mt-head">Status</div>
+            <div class="mt-head">Ingresso</div>
+            <div class="mt-head" style="text-align:right;">Ações</div>
+          </div>
+          <div class="mt-row" onclick="openProfile('Ana Nóbrega','AN','linear-gradient(135deg,#8B6A35,#C9A96E)')">
+            <div class="mt-user"><div class="mt-avatar" style="background:linear-gradient(135deg,#8B6A35,#C9A96E)">AN</div><div><div class="mt-name">Ana Nóbrega</div><div class="mt-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3b5a555a7b555459495e5c5a575a4c15585456">[email&#160;protected]</a></div></div></div>
+            <div class="mt-cell">OAB — SP</div><div class="mt-cell">Profissional</div>
+            <div class="mt-cell"><span class="status-pill ativo">Ativo</span></div>
+            <div class="mt-cell">28 fev 2026</div>
+            <div class="mt-actions"><button class="act-btn" onclick="event.stopPropagation();openProfile('Ana Nóbrega','AN','linear-gradient(135deg,#8B6A35,#C9A96E)')">👁</button><button class="act-btn" onclick="event.stopPropagation()">✏</button><button class="act-btn" onclick="event.stopPropagation()" style="color:var(--red);">🗑</button></div>
+          </div>
+          <div class="mt-row" onclick="openProfile('João Mendes','JM','linear-gradient(135deg,#2E6B3E,#4CAF7D)')">
+            <div class="mt-user"><div class="mt-avatar" style="background:linear-gradient(135deg,#2E6B3E,#4CAF7D)">JM</div><div><div class="mt-name">João Mendes</div><div class="mt-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="563c783b333832332516333b373f3a7835393b">[email&#160;protected]</a></div></div></div>
+            <div class="mt-cell">CRM — MG</div><div class="mt-cell">Essencial</div>
+            <div class="mt-cell"><span class="status-pill pendente">Pendente</span></div>
+            <div class="mt-cell">27 fev 2026</div>
+            <div class="mt-actions"><button class="act-btn" onclick="event.stopPropagation();openProfile('João Mendes','JM','linear-gradient(135deg,#2E6B3E,#4CAF7D)')">👁</button><button class="act-btn" onclick="event.stopPropagation()">✏</button><button class="act-btn" onclick="event.stopPropagation()" style="color:var(--red);">🗑</button></div>
+          </div>
+          <div class="mt-row" onclick="openProfile('Luísa Carvalho','LC','linear-gradient(135deg,#2C3E7A,#5B8DD9)')">
+            <div class="mt-user"><div class="mt-avatar" style="background:linear-gradient(135deg,#2C3E7A,#5B8DD9)">LC</div><div><div class="mt-name">Luísa Carvalho</div><div class="mt-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="69051c001a08470a290a06071a1c051d061b0008470a0604">[email&#160;protected]</a></div></div></div>
+            <div class="mt-cell">ABEC</div><div class="mt-cell">Profissional</div>
+            <div class="mt-cell"><span class="status-pill ativo">Ativo</span></div>
+            <div class="mt-cell">26 fev 2026</div>
+            <div class="mt-actions"><button class="act-btn" onclick="event.stopPropagation();openProfile('Luísa Carvalho','LC','linear-gradient(135deg,#2C3E7A,#5B8DD9)')">👁</button><button class="act-btn" onclick="event.stopPropagation()">✏</button><button class="act-btn" onclick="event.stopPropagation()" style="color:var(--red);">🗑</button></div>
+          </div>
+          <div class="mt-row" onclick="openProfile('Ricardo Faria','RF','linear-gradient(135deg,#5C2E00,#C9A96E)')">
+            <div class="mt-user"><div class="mt-avatar" style="background:linear-gradient(135deg,#5C2E00,#C9A96E)">RF</div><div><div class="mt-name">Ricardo Faria</div><div class="mt-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a4d6c2c5d6cdc5e4d6cc8ac7cbc98ac6d6">[email&#160;protected]</a></div></div></div>
+            <div class="mt-cell">ABRH — RJ</div><div class="mt-cell">Associação</div>
+            <div class="mt-cell"><span class="status-pill ativo">Ativo</span></div>
+            <div class="mt-cell">25 fev 2026</div>
+            <div class="mt-actions"><button class="act-btn" onclick="event.stopPropagation();openProfile('Ricardo Faria','RF','linear-gradient(135deg,#5C2E00,#C9A96E)')">👁</button><button class="act-btn" onclick="event.stopPropagation()">✏</button><button class="act-btn" onclick="event.stopPropagation()" style="color:var(--red);">🗑</button></div>
+          </div>
+          <div class="mt-row" onclick="openProfile('Mariana Silva','MS','linear-gradient(135deg,#5C1010,#E05555)')">
+            <div class="mt-user"><div class="mt-avatar" style="background:linear-gradient(135deg,#5C1010,#E05555)">MS</div><div><div class="mt-name">Mariana Silva</div><div class="mt-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0d606c7f64237e64617b6c4d78636423686978">[email&#160;protected]</a></div></div></div>
+            <div class="mt-cell">SBPC</div><div class="mt-cell">Essencial</div>
+            <div class="mt-cell"><span class="status-pill inativo">Inativo</span></div>
+            <div class="mt-cell">20 fev 2026</div>
+            <div class="mt-actions"><button class="act-btn" onclick="event.stopPropagation();openProfile('Mariana Silva','MS','linear-gradient(135deg,#5C1010,#E05555)')">👁</button><button class="act-btn" onclick="event.stopPropagation()">✏</button><button class="act-btn" onclick="event.stopPropagation()" style="color:var(--red);">🗑</button></div>
+          </div>
+          <div class="mt-row" onclick="openProfile('Carlos Duarte','CD','linear-gradient(135deg,#1A2E1A,#4CAF7D)')">
+            <div class="mt-user"><div class="mt-avatar" style="background:linear-gradient(135deg,#1A2E1A,#4CAF7D)">CD</div><div><div class="mt-name">Carlos Duarte</div><div class="mt-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9af9fbe8f6f5e9b4fedafff7eae8ffe9fbb4f9f5f7">[email&#160;protected]</a></div></div></div>
+            <div class="mt-cell">OAB — SP</div><div class="mt-cell">Profissional</div>
+            <div class="mt-cell"><span class="status-pill ativo">Ativo</span></div>
+            <div class="mt-cell">18 fev 2026</div>
+            <div class="mt-actions"><button class="act-btn" onclick="event.stopPropagation();">👁</button><button class="act-btn" onclick="event.stopPropagation()">✏</button><button class="act-btn" onclick="event.stopPropagation()" style="color:var(--red);">🗑</button></div>
+          </div>
+          <div class="mt-row">
+            <div class="mt-user"><div class="mt-avatar" style="background:linear-gradient(135deg,#2A1A3A,#9B59B6)">FP</div><div><div class="mt-name">Fernanda Pires</div><div class="mt-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="781e5608110a1d0b38191c0e561b1715561a0a">[email&#160;protected]</a></div></div></div>
+            <div class="mt-cell">OAB — RJ</div><div class="mt-cell">Essencial</div>
+            <div class="mt-cell"><span class="status-pill pendente">Pendente</span></div>
+            <div class="mt-cell">15 fev 2026</div>
+            <div class="mt-actions"><button class="act-btn">👁</button><button class="act-btn">✏</button><button class="act-btn" style="color:var(--red);">🗑</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE PANEL -->
+      <div class="profile-panel hidden" id="profilePanel">
+        <div class="pp-header">
+          <button class="pp-close" onclick="closeProfile()">✕</button>
+          <div class="pp-avatar" id="ppAvatar">AN</div>
+          <div class="pp-name" id="ppName">Ana Nóbrega</div>
+          <div class="pp-role"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="40212e21002e2f22322527212c21376e232f2d">[email&#160;protected]</a> · ID #4821</div>
+          <div class="pp-badges">
+            <span class="pp-badge plan">Profissional</span>
+            <span class="pp-badge assoc">OAB — SP</span>
+          </div>
+        </div>
+        <div class="pp-section">
+          <div class="pp-section-title">Informações</div>
+          <div class="pp-row"><span class="pp-row-label">Ingresso</span><span class="pp-row-val">28 fev 2026</span></div>
+          <div class="pp-row"><span class="pp-row-label">Última atividade</span><span class="pp-row-val">Hoje, 09:14</span></div>
+          <div class="pp-row"><span class="pp-row-label">Total gasto</span><span class="pp-row-val" style="color:var(--gold);">R$ 744</span></div>
+          <div class="pp-row"><span class="pp-row-label">Cursos matriculados</span><span class="pp-row-val">5</span></div>
+          <div class="pp-row"><span class="pp-row-label">Certificados</span><span class="pp-row-val">3</span></div>
+          <div class="pp-row"><span class="pp-row-label">Sequência atual</span><span class="pp-row-val">14 dias 🔥</span></div>
+        </div>
+        <div class="pp-section">
+          <div class="pp-section-title">Cursos em andamento</div>
+          <div class="pp-courses">
+            <div class="pp-course-item"><span class="pp-course-icon">⚖️</span><div style="flex:1"><div class="pp-course-name">Compliance & Governança</div><div class="pp-course-prog">68%</div><div class="pp-course-bar"><div class="pp-course-fill" style="width:68%"></div></div></div></div>
+            <div class="pp-course-item"><span class="pp-course-icon">📈</span><div style="flex:1"><div class="pp-course-name">Planejamento Estratégico</div><div class="pp-course-prog">30%</div><div class="pp-course-bar"><div class="pp-course-fill" style="width:30%"></div></div></div></div>
+            <div class="pp-course-item"><span class="pp-course-icon">🎙️</span><div style="flex:1"><div class="pp-course-name">Oratória Profissional</div><div class="pp-course-prog">10%</div><div class="pp-course-bar"><div class="pp-course-fill" style="width:10%"></div></div></div></div>
+          </div>
+        </div>
+        <div class="pp-actions">
+          <button class="btn-action primary">📧 Enviar mensagem</button>
+          <button class="btn-action">🔄 Alterar plano</button>
+          <button class="btn-action">📜 Ver certificados</button>
+          <button class="btn-action">⏸ Suspender acesso</button>
+          <button class="btn-action danger">🗑 Remover membro</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INVITE MODAL -->
+<div class="modal-overlay" id="inviteModal" onclick="if(event.target===this)closeInvite()">
+  <div class="modal">
+    <div class="modal-body">
+      <div class="modal-title">Convidar novo membro</div>
+      <div class="modal-sub">O convite será enviado por e-mail com link de acesso direto.</div>
+      <div class="field"><label class="field-label">Nome completo</label><input class="field-input" type="text" placeholder="Nome do convidado"></div>
+      <div class="field"><label class="field-label">E-mail</label><input class="field-input" type="email" placeholder="email@dominio.com"></div>
+      <div class="field"><label class="field-label">Plano</label><select class="field-input field-select"><option>Essencial — R$ 49/mês</option><option selected>Profissional — R$ 149/mês</option><option>Associação — R$ 499/mês</option></select></div>
+      <div class="field"><label class="field-label">Associação</label><select class="field-input field-select"><option>OAB — São Paulo</option><option>CRM — Minas Gerais</option><option>SBPC</option><option>ABRH — Rio de Janeiro</option><option>ABEC</option></select></div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeInvite()">Cancelar</button>
+        <button class="btn-confirm" onclick="sendInvite()">Enviar convite</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-deco

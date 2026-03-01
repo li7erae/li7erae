@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Li7erae — Catálogo de Cursos</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#00B4FF;--blue-dim:rgba(0,180,255,0.12);--blue-glow:rgba(0,180,255,0.28);
+  --gold:#F5A623;--gold-bright:#FFB940;--gold-dim:rgba(245,166,35,0.14);--gold-glow:rgba(245,166,35,0.4);
+  --green:#00E676;--green-dim:rgba(0,230,118,0.1);--red:#FF5252;--red-dim:rgba(255,82,82,0.1);
+  --purple:#BB86FC;
+  --black:#050810;--dark:#080D18;--dark2:#0D1525;--dark3:#121D30;--dark4:#162038;
+  --text:#E8F4FF;--text-mid:#8AADCC;--text-dim:#3D5570;
+  --line:rgba(0,180,255,0.1);--line-gold:rgba(245,166,35,0.18);
+  --gold-line:rgba(245,166,35,0.18);--gold-light:#FFB940;
+  --sidebar-w:240px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;font-weight:300;min-height:100vh;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:#333;border-radius:2px;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(8,8,8,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--gold-line);padding:16px 60px;display:flex;align-items:center;gap:24px;}
+.logo{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:500;letter-spacing:0.06em;color:var(--text);text-decoration:none;}
+.logo span{color:var(--gold);}
+.nav-spacer{flex:1;}
+.nav-link{font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;font-weight:400;transition:color 0.2s;}
+.nav-link:hover,.nav-link.active{color:var(--gold);}
+.btn-nav{padding:9px 22px;background:var(--gold);color:var(--black);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;transition:all 0.25s;}
+.btn-nav:hover{background:var(--gold-light);}
+.btn-nav-ghost{padding:8px 22px;border:1px solid rgba(201,169,110,0.35);color:var(--gold);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;transition:all 0.25s;}
+.btn-nav-ghost:hover{background:var(--gold-dim);}
+
+/* HERO CATALOG */
+.cat-hero{padding:72px 60px 56px;background:var(--dark);border-bottom:1px solid var(--gold-line);position:relative;overflow:hidden;}
+.cat-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 70% 50%,rgba(201,169,110,0.05) 0%,transparent 60%);}
+.cat-hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,169,110,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,169,110,0.025) 1px,transparent 1px);background-size:70px 70px;mask-image:radial-gradient(ellipse 80% 80% at 70% 50%,black,transparent);}
+.cat-hero-content{position:relative;z-index:2;}
+.hero-label{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.hero-label::before{content:'';display:block;width:32px;height:1px;background:var(--gold);}
+.cat-hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(40px,5vw,64px);font-weight:300;line-height:1.05;margin-bottom:16px;}
+.cat-hero h1 em{font-style:italic;color:var(--gold);}
+.cat-hero-sub{font-size:15px;color:var(--text-dim);max-width:520px;line-height:1.8;margin-bottom:36px;}
+.hero-search-wrap{display:flex;gap:12px;max-width:560px;}
+.hero-search{flex:1;display:flex;align-items:center;gap:12px;background:var(--dark2);border:1px solid rgba(201,169,110,0.2);padding:14px 18px;}
+.hero-search:focus-within{border-color:rgba(201,169,110,0.5);}
+.hero-search input{background:none;border:none;outline:none;color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;font-weight:300;flex:1;}
+.hero-search input::placeholder{color:var(--text-dim);}
+.btn-search{padding:14px 28px;background:var(--gold);color:var(--black);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;border:none;cursor:pointer;white-space:nowrap;transition:all 0.25s;}
+.btn-search:hover{background:var(--gold-light);}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
+.hero-tag{padding:6px 14px;border:1px solid rgba(201,169,110,0.2);color:var(--text-dim);font-size:11px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.hero-tag:hover,.hero-tag.active{background:var(--gold-dim);border-color:rgba(201,169,110,0.5);color:var(--gold);}
+
+/* MAIN LAYOUT */
+.cat-body{display:flex;gap:0;min-height:calc(100vh - 220px);}
+
+/* FILTERS SIDEBAR */
+.filters-sidebar{width:260px;min-width:260px;border-right:1px solid var(--gold-line);padding:28px 24px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
+.fs-title{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:14px;}
+.fs-group{margin-bottom:28px;}
+.fs-group-title{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);font-weight:500;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.fs-option{display:flex;align-items:center;justify-content:space-between;padding:8px 0;cursor:pointer;transition:all 0.15s;}
+.fs-option:hover .fs-label{color:var(--text);}
+.fs-option.checked .fs-label{color:var(--gold);}
+.fs-check{width:14px;height:14px;border:1.5px solid rgba(255,255,255,0.2);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:all 0.2s;flex-shrink:0;}
+.fs-option.checked .fs-check{background:var(--gold);border-color:var(--gold);color:var(--black);}
+.fs-label{font-size:13px;color:var(--text-mid);flex:1;margin-left:10px;font-weight:300;}
+.fs-count{font-size:11px;color:var(--text-dim);}
+.price-range{padding:8px 0;}
+.price-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--text-dim);margin-bottom:10px;}
+.range-input{-webkit-appearance:none;width:100%;height:3px;background:linear-gradient(90deg,var(--gold) 60%,rgba(255,255,255,0.1) 60%);border-radius:2px;outline:none;cursor:pointer;}
+.range-input::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--gold);border-radius:50%;cursor:pointer;}
+.fs-clear{font-size:11px;color:var(--gold);cursor:pointer;letter-spacing:0.1em;opacity:0.7;transition:opacity 0.2s;}
+.fs-clear:hover{opacity:1;}
+
+/* COURSES GRID */
+.courses-col{flex:1;padding:28px 32px;overflow-y:auto;}
+.results-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.results-count{font-size:13px;color:var(--text-dim);}<br>
+.results-count strong{color:var(--text);}
+.sort-wrap{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-dim);}
+.sort-select{background:var(--dark2);border:1px solid rgba(201,169,110,0.15);color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;padding:7px 12px;outline:none;cursor:pointer;}
+.view-toggle{display:flex;border:1px solid rgba(201,169,110,0.15);}
+.vt-btn{padding:7px 10px;background:none;border:none;color:var(--text-dim);font-size:13px;cursor:pointer;border-right:1px solid rgba(201,169,110,0.1);transition:all 0.2s;}
+.vt-btn:last-child{border-right:none;}
+.vt-btn.active,.vt-btn:hover{background:var(--gold-dim);color:var(--gold);}
+
+/* Course card GRID */
+.grid-layout{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.course-card{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);overflow:hidden;transition:all 0.3s;cursor:pointer;}
+.course-card:hover{border-color:rgba(201,169,110,0.4);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.4);}
+.cc-thumb{height:160px;position:relative;display:flex;align-items:center;justify-content:center;font-size:44px;overflow:hidden;}
+.cc-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;transition:background 0.3s;}
+.course-card:hover .cc-overlay{background:rgba(0,0,0,0.4);}
+.cc-play{width:52px;height:52px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;opacity:0;transform:scale(0.8);transition:all 0.3s;}
+.course-card:hover .cc-play{opacity:1;transform:scale(1);}
+.cc-badge{position:absolute;top:12px;left:12px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;padding:4px 10px;font-weight:600;}
+.cc-badge.novo{background:var(--gold);color:var(--black);}
+.cc-badge.popular{background:rgba(201,169,110,0.2);color:var(--gold);border:1px solid rgba(201,169,110,0.3);}
+.cc-badge.gratis{background:rgba(76,175,125,0.2);color:var(--green);border:1px solid rgba(76,175,125,0.3);}
+.cc-body{padding:20px;}
+.cc-cat{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:6px;}
+.cc-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:500;line-height:1.25;margin-bottom:10px;color:var(--text);}
+.cc-desc{font-size:12px;line-height:1.7;color:var(--text-dim);margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cc-meta{display:flex;gap:14px;font-size:11px;color:var(--text-dim);margin-bottom:14px;}
+.cc-instructor{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.04);margin-bottom:10px;}
+.cc-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#5C1010,var(--gold));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--black);}
+.cc-instructor-name{font-size:11px;color:var(--text-dim);}
+.cc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,0.04);}
+.cc-price{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:400;color:var(--gold);}
+.cc-price small{font-family:'Exo 2',sans-serif;font-size:11px;color:var(--text-dim);font-weight:300;}
+.cc-price-orig{font-size:12px;color:var(--text-dim);text-decoration:line-through;margin-right:4px;}
+.btn-enroll{padding:9px 18px;background:none;border:1px solid rgba(201,169,110,0.35);color:var(--gold);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;}
+.btn-enroll:hover{background:var(--gold);color:var(--black);}
+
+/* LIST layout */
+.list-layout{display:flex;flex-direction:column;gap:14px;}
+.course-card-list{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);display:flex;overflow:hidden;transition:all 0.3s;cursor:pointer;}
+.course-card-list:hover{border-color:rgba(201,169,110,0.4);}
+.ccl-thumb{width:160px;min-width:160px;height:120px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;}
+.ccl-body{flex:1;padding:18px 20px;display:flex;flex-direction:column;}
+.ccl-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;}
+
+/* FEATURED */
+.featured-banner{background:var(--dark2);border:1px solid rgba(201,169,110,0.2);padding:28px 32px;margin-bottom:24px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;position:relative;overflow:hidden;}
+.featured-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.featured-label{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:8px;}
+.featured-title{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:400;margin-bottom:6px;}
+.featured-sub{font-size:13px;color:var(--text-dim);margin-bottom:14px;}
+.featured-meta{display:flex;gap:20px;font-size:12px;color:var(--text-dim);}
+.featured-right{text-align:right;}
+.featured-price{font-family:'Rajdhani',sans-serif;font-size:44px;font-weight:300;color:var(--gold);line-height:1;}
+.featured-orig{font-size:14px;color:var(--text-dim);text-decoration:line-through;margin-bottom:6px;}
+.btn-featured{padding:13px 32px;background:var(--gold);color:var(--black);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.25s;display:block;margin-top:12px;width:100%;}
+.btn-featured:hover{background:var(--gold-light);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;padding:24px;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--dark);border:1px solid rgba(201,169,110,0.2);max-width:680px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:modalIn 0.35s ease both;}
+@keyframes modalIn{from{transform:translateY(24px);opacity:0;}to{transform:none;opacity:1;}}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.modal-hero{height:200px;background:linear-gradient(135deg,#0A0A1E,rgba(201,169,110,0.1));display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.modal-close:hover{color:var(--gold);border-color:rgba(201,169,110,0.4);}
+.modal-body{padding:32px;}
+.modal-cat{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:10px;}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:500;line-height:1.2;margin-bottom:10px;}
+.modal-meta{display:flex;gap:20px;font-size:12px;color:var(--text-dim);margin-bottom:16px;}
+.modal-desc{font-size:14px;line-height:1.8;color:var(--text-dim);margin-bottom:24px;}
+.modal-includes{margin-bottom:24px;}
+.modal-includes-title{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-mid);font-weight:500;margin-bottom:12px;}
+.include-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-mid);padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.include-item:last-child{border-bottom:none;}
+.include-icon{color:var(--gold);font-size:12px;width:18px;}
+.modal-footer{display:flex;align-items:center;justify-content:space-between;padding-top:20px;border-top:1px solid rgba(201,169,110,0.1);}
+.modal-price{font-family:'Rajdhani',sans-serif;font-size:40px;font-weight:300;color:var(--gold);}
+.modal-price small{font-family:'Exo 2',sans-serif;font-size:14px;color:var(--text-dim);font-weight:300;}
+.btn-modal-enroll{padding:14px 40px;background:var(--gold);color:var(--black);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.25s;}
+.btn-modal-enroll:hover{background:var(--gold-light);}
+
+/* ANIM */
+.fade-in{animation:fadeIn 0.5s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+.course-card:nth-child(2){animation-delay:0.05s;}
+.course-card:nth-child(3){animation-delay:0.1s;}
+.course-card:nth-child(4){animation-delay:0.15s;}
+.course-card:nth-child(5){animation-delay:0.2s;}
+.course-card:nth-child(6){animation-delay:0.25s;}
+
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;padding:32px 0;}
+.pg-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--dark2);border:1px solid rgba(201,169,110,0.12);color:var(--text-dim);font-family:'Exo 2',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;}
+.pg-btn:hover,.pg-btn.active{background:var(--gold-dim);border-color:rgba(201,169,110,0.4);color:var(--gold);}
+
+@media(max-width:1100px){.grid-layout{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:768px){nav{padding:16px 24px;}.cat-hero{padding:48px 24px 40px;}.filters-sidebar{display:none;}.courses-col{padding:20px;}.grid-layout{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">Li<span>7</span>erae</a>
+  <div class="nav-spacer"></div>
+  <a class="nav-link active" href="#">Cursos</a>
+  <a class="nav-link" href="#">Associações</a>
+  <a class="nav-link" href="#">Planos</a>
+  <a class="btn-nav-ghost" href="#">Entrar</a>
+  <a class="btn-nav" href="#">Começar grátis</a>
+</nav>
+
+<!-- HERO -->
+<div class="cat-hero">
+  <div class="cat-hero-grid"></div>
+  <div class="cat-hero-content fade-in">
+    <div class="hero-label">Catálogo</div>
+    <h1>Encontre o curso<br>ideal para <em>evoluir.</em></h1>
+    <p class="cat-hero-sub">340+ cursos desenvolvidos por especialistas. Do Direito à Gestão, da Comunicação à Tecnologia.</p>
+    <div class="hero-search-wrap">
+      <div class="hero-search">
+        <span style="font-size:16px;color:var(--text-dim);">🔍</span>
+        <input type="text" placeholder="Ex: Compliance, Liderança, LGPD...">
+      </div>
+      <button class="btn-search">Buscar</button>
+    </div>
+    <div class="hero-tags">
+      <div class="hero-tag active" onclick="filterTag(this)">Todos</div>
+      <div class="hero-tag" onclick="filterTag(this)">Direito</div>
+      <div class="hero-tag" onclick="filterTag(this)">Gestão</div>
+      <div class="hero-tag" onclick="filterTag(this)">Comunicação</div>
+      <div class="hero-tag" onclick="filterTag(this)">Finanças</div>
+      <div class="hero-tag" onclick="filterTag(this)">Tecnologia</div>
+      <div class="hero-tag" onclick="filterTag(this)">Metodologia</div>
+      <div class="hero-tag" onclick="filterTag(this)">Gratuitos</div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="cat-body">
+
+  <!-- FILTERS -->
+  <aside class="filters-sidebar">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div class="fs-title">Filtros</div>
+      <div class="fs-clear">Limpar tudo</div>
+    </div>
+
+    <div class="fs-group">
+      <div class="fs-group-title">Categoria</div>
+      <div class="fs-option checked" onclick="toggleFilter(this)"><div class="fs-check">✓</div><span class="fs-label">Direito</span><span class="fs-count">48</span></div>
+      <div class="fs-option checked" onclick="toggleFilter(this)"><div class="fs-check">✓</div><span class="fs-label">Gestão</span><span class="fs-count">72</span></div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">Comunicação</span><span class="fs-count">35</span></div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">Finanças</span><span class="fs-count">29</span></div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">Tecnologia</span><span class="fs-count">54</span></div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">Metodologia</span><span class="fs-count">41</span></div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">RH</span><span class="fs-count">28</span></div>
+    </div>
+
+    <div class="fs-group">
+      <div class="fs-group-title">Nível</div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">Iniciante</span><span class="fs-count">120</span></div>
+      <div class="fs-option checked" onclick="toggleFilter(this)"><div class="fs-check">✓</div><span class="fs-label">Intermediário</span><span class="fs-count">140</span></div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">Avançado</span><span class="fs-count">80</span></div>
+    </div>
+
+    <div class="fs-group">
+      <div class="fs-group-title">Preço</div>
+      <div class="price-range">
+        <div class="price-labels"><span>R$ 0</span><span>R$ 997</span></div>
+        <input type="range" class="range-input" min="0" max="997" value="600" oninput="updatePrice(this)">
+        <div style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:6px;" id="priceVal">Até R$ 600</div>
+      </div>
+      <div style="height:10px;"></div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">Apenas gratuitos</span><span class="fs-count">22</span></div>
+    </div>
+
+    <div class="fs-group">
+      <div class="fs-group-title">Carga horária</div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">Menos de 2h</span><span class="fs-count">45</span></div>
+      <div class="fs-option checked" onclick="toggleFilter(this)"><div class="fs-check">✓</div><span class="fs-label">2h a 6h</span><span class="fs-count">98</span></div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">Mais de 6h</span><span class="fs-count">80</span></div>
+    </div>
+
+    <div class="fs-group">
+      <div class="fs-group-title">Avaliação</div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">⭐⭐⭐⭐⭐ 5.0</span><span class="fs-count">12</span></div>
+      <div class="fs-option checked" onclick="toggleFilter(this)"><div class="fs-check">✓</div><span class="fs-label">⭐⭐⭐⭐ 4.0+</span><span class="fs-count">142</span></div>
+      <div class="fs-option" onclick="toggleFilter(this)"><div class="fs-check"></div><span class="fs-label">⭐⭐⭐ 3.0+</span><span class="fs-count">200</span></div>
+    </div>
+  </aside>
+
+  <!-- COURSES -->
+  <div class="courses-col">
+
+    <!-- Featured -->
+    <div class="featured-banner fade-in">
+      <div>
+        <div class="featured-label">⭐ Destaque da semana</div>
+        <div class="featured-title">Compliance & Governança<br>para Associações</div>
+        <div class="featured-sub">O curso mais completo sobre compliance no setor associativo. Atualizado com as normas de 2025.</div>
+        <div class="featured-meta">
+          <span>⭐ 4.9 (312 avaliações)</span>
+          <span>👤 1.840 alunos</span>
+          <span>📚 14 módulos · 6h 20min</span>
+          <span>📜 Certificado incluído</span>
+        </div>
+      </div>
+      <div class="featured-right">
+        <div class="featured-orig">R$ 397</div>
+        <div class="featured-price">R$ 297</div>
+        <button class="btn-featured" onclick="openModal()">Matricular agora</button>
+      </div>
+    </div>
+
+    <!-- Results bar -->
+    <div class="results-bar">
+      <div class="results-count"><strong>120</strong> cursos encontrados</div>
+      <div class="sort-wrap">
+        Ordenar por
+        <select class="sort-select">
+          <option>Relevância</option>
+          <option>Mais recentes</option>
+          <option>Mais vendidos</option>
+          <option>Maior avaliação</option>
+          <option>Menor preço</option>
+        </select>
+        <div class="view-toggle">
+          <button class="vt-btn active" id="gridBtn" onclick="setLayout('grid')">⊞</button>
+          <button class="vt-btn" id="listBtn" onclick="setLayout('list')">☰</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid-layout" id="coursesGrid">
+
+      <div class="course-card fade-in" onclick="openModal()">
+        <div class="cc-thumb" style="background:linear-gradient(135deg,#0A0A1E,rgba(201,169,110,0.12));">
+          ⚖️<div class="cc-overlay"><div class="cc-play">▶</div></div>
+          <div class="cc-badge popular">Popular</div>
+        </div>
+        <div class="cc-body">
+          <div class="cc-cat">Direito</div>
+          <div class="cc-title">Compliance & Governança para Associações</div>
+          <div class="cc-desc">Aprenda a implementar estruturas sólidas de compliance e governança com base na legislação vigente.</div>
+          <div class="cc-meta"><span>📚 14 módulos</span><span>⏱ 6h 20min</span><span>⭐ 4.9</span></div>
+          <div class="cc-instructor"><div class="cc-avatar" style="background:linear-gradient(135deg,#2C3E7A,#5B8DD9)">HM</div><span class="cc-instructor-name">Prof. Hélio Matos</span></div>
+          <div class="cc-footer">
+            <div class="cc-price"><small>R$</small> 297</div>
+            <button class="btn-enroll" onclick="event.stopPropagation();openModal()">Matricular</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card fade-in" onclick="openModal()">
+        <div class="cc-thumb" style="background:linear-gradient(135deg,#0A1E0A,rgba(76,175,125,0.1));">
+          📈<div class="cc-overlay"><div class="cc-play">▶</div></div>
+          <div class="cc-badge novo">Novo</div>
+        </div>
+        <div class="cc-body">
+          <div class="cc-cat">Gestão</div>
+          <div class="cc-title">Planejamento Estratégico para Líderes</div>
+          <div class="cc-desc">Desenvolva habilidades de planejamento e execução estratégica para conduzir equipes e organizações.</div>
+          <div class="cc-meta"><span>📚 18 módulos</span><span>⏱ 11h</span><span>⭐ 4.8</span></div>
+          <div class="cc-instructor"><div class="cc-avatar" style="background:linear-gradient(135deg,#1A3320,#4CAF7D)">RS</div><span class="cc-instructor-name">Dra. Renata Santos</span></div>
+          <div class="cc-footer">
+            <div><span class="cc-price-orig">R$ 597</span><div class="cc-price"><small>R$</small> 497</div></div>
+            <button class="btn-enroll" onclick="event.stopPropagation();">Matricular</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card fade-in" onclick="openModal()">
+        <div class="cc-thumb" style="background:linear-gradient(135deg,#1E0A1E,rgba(91,141,217,0.1));">
+          🎙️<div class="cc-overlay"><div class="cc-play">▶</div></div>
+        </div>
+        <div class="cc-body">
+          <div class="cc-cat">Comunicação</div>
+          <div class="cc-title">Oratória e Persuasão Profissional</div>
+          <div class="cc-desc">Domine técnicas de comunicação oral e persuasão para ambientes corporativos e públicos.</div>
+          <div class="cc-meta"><span>📚 8 módulos</span><span>⏱ 4h 45min</span><span>⭐ 4.7</span></div>
+          <div class="cc-instructor"><div class="cc-avatar" style="background:linear-gradient(135deg,#2C3E7A,#5B8DD9)">MF</div><span class="cc-instructor-name">Marcos Figueiredo</span></div>
+          <div class="cc-footer">
+            <div class="cc-price"><small>R$</small> 197</div>
+            <button class="btn-enroll" onclick="event.stopPropagation();">Matricular</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card fade-in" onclick="openModal()">
+        <div class="cc-thumb" style="background:linear-gradient(135deg,#0A0A1A,rgba(201,169,110,0.08));">
+          🌐<div class="cc-overlay"><div class="cc-play">▶</div></div>
+          <div class="cc-badge popular">Popular</div>
+        </div>
+        <div class="cc-body">
+          <div class="cc-cat">Direito</div>
+          <div class="cc-title">Direito Digital & LGPD na Prática</div>
+          <div class="cc-desc">Adeque sua organização à LGPD com segurança, entendendo os processos legais e técnicos.</div>
+          <div class="cc-meta"><span>📚 10 módulos</span><span>⏱ 5h 30min</span><span>⭐ 4.9</span></div>
+          <div class="cc-instructor"><div class="cc-avatar" style="background:linear-gradient(135deg,#3A1020,#E05555)">LT</div><span class="cc-instructor-name">Dra. Lívia Torres</span></div>
+          <div class="cc-footer">
+            <div class="cc-price"><small>R$</small> 397</div>
+            <button class="btn-enroll" onclick="event.stopPropagation();">Matricular</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card fade-in" onclick="openModal()">
+        <div class="cc-thumb" style="background:linear-gradient(135deg,#1A1A0A,rgba(201,169,110,0.06));">
+          💼<div class="cc-overlay"><div class="cc-play">▶</div></div>
+        </div>
+        <div class="cc-body">
+          <div class="cc-cat">Gestão</div>
+          <div class="cc-title">Liderança e Gestão de Times de Alta Performance</div>
+          <div class="cc-desc">Como liderar pessoas, gerir conflitos e extrair o máximo potencial de equipes diversas.</div>
+          <div class="cc-meta"><span>📚 12 módulos</span><span>⏱ 7h</span><span>⭐ 4.6</span></div>
+          <div class="cc-instructor"><div class="cc-avatar" style="background:linear-gradient(135deg,#8B6A35,#C9A96E)">FA</div><span class="cc-instructor-name">Felipe Azevedo</span></div>
+          <div class="cc-footer">
+            <div class="cc-price"><small>R$</small> 347</div>
+            <button class="btn-enroll" onclick="event.stopPropagation();">Matricular</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card fade-in" onclick="openModal()">
+        <div class="cc-thumb" style="background:linear-gradient(135deg,#0A1A1A,rgba(76,175,125,0.08));">
+          📐<div class="cc-overlay"><div class="cc-play">▶</div></div>
+          <div class="cc-badge gratis">Grátis</div>
+        </div>
+        <div class="cc-body">
+          <div class="cc-cat">Metodologia</div>
+          <div class="cc-title">Introdução à Gestão de Projetos com Agilidade</div>
+          <div class="cc-desc">Fundamentos de metodologias ágeis: Scrum, Kanban e como aplicá-los em seu dia a dia.</div>
+          <div class="cc-meta"><span>📚 6 módulos</span><span>⏱ 2h 30min</span><span>⭐ 4.8</span></div>
+          <div class="cc-instructor"><div class="cc-avatar" style="background:linear-gradient(135deg,#1A2E3A,#5B8DD9)">PC</div><span class="cc-instructor-name">Paulo Carvalho</span></div>
+          <div class="cc-footer">
+            <div class="cc-price" style="color:var(--green);">Grátis</div>
+            <button class="btn-enroll" style="border-color:rgba(76,175,125,0.4);color:var(--green);" onclick="event.stopPropagation();">Inscrever-se</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="pagination fade-in">
+      <div class="pg-btn">‹</div>
+      <div class="pg-btn active">1</div>
+      <div class="pg-btn">2</div>
+      <div class="pg-btn">3</div>
+      <div class="pg-btn">…</div>
+      <div class="pg-btn">12</div>
+      <div class="pg-btn">›</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-hero">
+      ⚖️
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-cat">Direito · Intermediário</div>
+      <div class="modal-title">Compliance & Governança<br>para Associações</div>
+      <div class="modal-meta">
+        <span>⭐ 4.9 (312 avaliações)</span>
+        <span>👤 1.840 alunos</span>
+        <span>🏛️ OAB — SP</span>
+      </div>
+      <p class="modal-desc">Este curso abrange desde os fundamentos do compliance até a implementação prática em associações de diferentes portes. Você aprenderá a estruturar canais de denúncia, elaborar políticas internas, gerenciar riscos e garantir conformidade regulatória com as normas brasileiras vigentes.</p>
+      <div class="modal-includes">
+        <div class="modal-includes-title">O que está incluído</div>
+        <div class="include-item"><span class="include-icon">▶</span>14 módulos em vídeo HD (6h 20min)</div>
+        <div class="include-item"><span class="include-icon">📄</span>Material complementar em PDF</div>
+        <div class="include-item"><span class="include-icon">📋</span>4 quizzes práticos</div>
+        <div class="include-item"><span class="include-icon">📜</span>Certificado com QR code verificável</div>
+        <div class="include-item"><span class="include-icon">♾</span>Acesso vitalício ao conteúdo</div>
+        <div class="include-item"><span class="include-icon">👥</span>Acesso ao grupo exclusivo de alunos</div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <div style="font-size:13px;color:var(--text-dim);text-decoration:line-through;margin-bottom:2px;">R$ 397</div>
+          <div class="modal-price"><small>R$</small> 297</div>
+          <div style="font-size:11px;color:var(--green);margin-top:4px;">✓ 25% de desconto — Oferta por tempo limitado</div>
+        </div>
+        <button class="btn-modal-enroll" onclick="closeModal()">Matricular agora →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function filterTag(el){
+  document.querySelectorAll('.hero-tag').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+function toggleFilter(el){el.classList.toggle('checked');}
+function updatePrice(el){document.getElementById('priceVal').textContent='Até R$ '+el.value;}
+function setLayout(l){
+  const g=document.getElementById('coursesGrid');
+  document.getElementById('gridBtn').classList.toggle('active',l==='grid');
+  document.getElementById('listBtn').classList.toggle('active',l==='list');
+  if(l==='list'){
+    g.className='list-layout';
+    g.querySelectorAll('.course-card').forEach(c=>{
+      c.classList.add('course-card-list');
+      const thumb=c.querySelector('.cc-thumb');
+      if(thumb){thumb.style.width='160px';thumb.style.minWidth='160px';thumb.style.height='120px';thumb.style.flexShrink='0';}
+    });
+  } else {
+    g.className='grid-layout';
+    g.querySelectorAll('.course-card').forEach(c=>{
+      c.classList.remove('course-card-list');
+      const thumb=c.querySelector('.cc-thumb');
+      if(thumb){thumb.style.width='';thumb.style.minWidth='';thumb.style.height='160px';}
+    });
+  }
+}
+function openModal(){document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function closeModalOutside(e){if(e.target===document.getElementById('modal'))closeModal();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+document.querySelectorAll('.pg-btn').forEach(b=>{
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.pg-btn').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

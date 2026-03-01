@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Li7erae — Dashboard Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#00B4FF;--blue-dim:rgba(0,180,255,0.12);--blue-glow:rgba(0,180,255,0.28);--gold:#F5A623;--gold-bright:#FFB940;--gold-dim:rgba(245,166,35,0.14);--gold-glow:rgba(245,166,35,0.4);--green:#00E676;--green-dim:rgba(0,230,118,0.1);--red:#FF5252;--red-dim:rgba(255,82,82,0.1);--purple:#BB86FC;--black:#050810;--dark:#080D18;--dark2:#0D1525;--dark3:#121D30;--dark4:#162038;--text:#E8F4FF;--text-mid:#8AADCC;--text-dim:#3D5570;--line:rgba(0,180,255,0.1);--sidebar-w:240px}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{overflow:hidden}
+body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;font-weight:300;display:flex;height:100vh;overflow:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--text-dim)}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--dark);border-right:1px solid var(--line);display:flex;flex-direction:column;height:100vh;overflow-y:auto;position:relative}
+.sidebar::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,180,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,180,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.sidebar-logo{padding:22px 20px 18px;border-bottom:1px solid var(--line);position:relative}
+.logo-wrap{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-chip{width:34px;height:34px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:18px;color:#000;clip-path:polygon(6px 0%,calc(100% - 6px) 0%,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0% calc(100% - 6px),0% 6px);box-shadow:0 0 14px var(--gold-glow);flex-shrink:0}
+.logo-name{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:0.1em;color:var(--text)}
+.logo-name span{color:var(--gold)}.logo-sub{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);margin-top:3px}
+.sidebar-section{padding:14px 12px 4px}.sidebar-section-label{font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:var(--text-dim);font-weight:700;padding:0 8px;margin-bottom:4px;font-family:'Rajdhani',sans-serif}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;color:var(--text-dim);font-size:13px;font-weight:400;cursor:pointer;transition:all 0.2s;text-decoration:none;margin-bottom:1px;border-left:2px solid transparent}
+.nav-item:hover{color:var(--text-mid);background:rgba(0,180,255,0.04);border-left-color:rgba(0,180,255,0.3)}
+.nav-item.active{color:var(--blue);background:var(--blue-dim);border-left-color:var(--blue)}
+.nav-icon{width:18px;text-align:center;font-size:14px;flex-shrink:0}
+.sidebar-spacer{flex:1}
+.sidebar-user{padding:14px;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.user-avatar{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--gold));clip-path:polygon(5px 0%,calc(100% - 5px) 0%,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0% calc(100% - 5px),0% 5px);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000;flex-shrink:0;font-family:'Rajdhani',sans-serif}
+.user-name{font-size:12px;font-weight:500;color:var(--text)}.user-role{font-size:10px;color:var(--text-dim)}
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{height:58px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0;background:var(--dark)}
+.topbar-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700}.topbar-sub{font-size:11px;color:var(--text-dim);margin-top:1px}.topbar-spacer{flex:1}
+.period-tabs{display:flex;border:1px solid var(--line)}.period-tab{padding:7px 14px;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;transition:all 0.2s;font-family:'Rajdhani',sans-serif;background:none;border-right:1px solid var(--line)}
+.period-tab:last-child{border-right:none}.period-tab.active,.period-tab:hover{background:var(--blue-dim);color:var(--blue)}
+.content{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:20px}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.kpi{background:var(--dark2);border:1px solid var(--line);padding:22px;position:relative;overflow:hidden;transition:border-color 0.2s}
+.kpi:hover{border-color:rgba(0,180,255,0.25)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--kpi-color,var(--blue)),transparent)}
+.kpi-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);font-weight:700;font-family:'Rajdhani',sans-serif;margin-bottom:12px}
+.kpi-value{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:var(--kpi-color,var(--blue));line-height:1;text-shadow:0 0 20px var(--kpi-glow,var(--blue-glow))}
+.kpi-change{font-size:11px;margin-top:8px;display:flex;align-items:center;gap:4px}
+.kpi-change.up{color:var(--green)}.kpi-change.down{color:var(--red)}
+.kpi-icon{position:absolute;right:18px;top:18px;font-size:24px;opacity:0.15}
+
+/* CHARTS ROW */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.chart-card{background:var(--dark2);border:1px solid var(--line);padding:22px}
+.chart-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.chart-sub{font-size:11px;color:var(--text-dim);margin-bottom:20px}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:120px}
+.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar-wrap{width:100%;display:flex;gap:3px;align-items:flex-end;flex:1}
+.bar{flex:1;border-radius:1px;min-height:4px;transition:height 0.8s ease;position:relative}
+.bar.blue{background:linear-gradient(to top,var(--blue),rgba(0,180,255,0.4))}
+.bar.gold{background:linear-gradient(to top,var(--gold),rgba(245,166,35,0.4))}
+.bar-label{font-size:10px;color:var(--text-dim);font-family:'Rajdhani',sans-serif;font-weight:600}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+.donut-svg{width:120px;height:120px}
+.donut-legend{width:100%;display:flex;flex-direction:column;gap:8px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-mid)}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* BOTTOM ROW */
+.bottom-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.tbl-card{background:var(--dark2);border:1px solid var(--line);padding:22px}
+.tbl-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.tbl-title a{font-size:11px;color:var(--blue);text-decoration:none;font-weight:400;letter-spacing:0.08em}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:8px 10px;background:var(--dark3);border-bottom:1px solid var(--line);font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim)}
+td{padding:10px 10px;border-bottom:1px solid rgba(0,180,255,0.05);font-size:12px;color:var(--text-mid)}
+tr:hover td{background:rgba(0,180,255,0.03);color:var(--text)}
+.pill{display:inline-block;padding:2px 8px;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;font-family:'Rajdhani',sans-serif}
+.pill-green{background:var(--green-dim);color:var(--green)}.pill-gold{background:var(--gold-dim);color:var(--gold)}.pill-red{background:var(--red-dim);color:var(--red)}
+/* Activity feed */
+.feed{display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto}
+.feed-item{display:flex;gap:10px;align-items:flex-start;padding:8px;background:var(--dark3);border-left:2px solid var(--line);font-size:12px;color:var(--text-mid)}
+.feed-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.feed-dot.blue{background:var(--blue)}.feed-dot.gold{background:var(--gold)}.feed-dot.green{background:var(--green)}
+.feed-time{font-size:10px;color:var(--text-dim);margin-top:2px;font-family:'Rajdhani',sans-serif}
+.fade-in{animation:fadeIn 0.5s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a class="logo-wrap" href="index.html">
+      <div class="logo-chip">7</div>
+      <div><div class="logo-name">LI<span>7</span>ERAE</div><div class="logo-sub">Administrador</div></div>
+    </a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label">Principal</div>
+    <a class="nav-item active" href="dashboard-admin.html"><span class="nav-icon">📊</span>Dashboard</a>
+    <a class="nav-item" href="associados.html"><span class="nav-icon">👥</span>Associados</a>
+    <a class="nav-item" href="financeiro.html"><span class="nav-icon">💰</span>Financeiro</a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label">Conteúdo</div>
+    <a class="nav-item" href="cursos.html"><span class="nav-icon">🎬</span>Cursos</a>
+    <a class="nav-item" href="comunidade.html"><span class="nav-icon">💬</span>Comunidade</a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label">Área do Aluno</div>
+    <a class="nav-item" href="catalogo.html"><span class="nav-icon">📚</span>Catálogo</a>
+    <a class="nav-item" href="associado.html"><span class="nav-icon">▶</span>Player de Aulas</a>
+    <a class="nav-item" href="perfil.html"><span class="nav-icon">👤</span>Perfil</a>
+    <a class="nav-item" href="login.html"><span class="nav-icon">🔐</span>Login</a>
+  </div>
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-user">
+    <div class="user-avatar">AD</div>
+    <div><div class="user-name">Administrador</div><div class="user-role">Super Admin</div></div>
+  </div>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <div><div class="topbar-title">Dashboard</div><div class="topbar-sub">Visão geral da plataforma</div></div>
+    <div class="topbar-spacer"></div>
+    <div class="period-tabs">
+      <div class="period-tab active">7d</div><div class="period-tab">30d</div>
+      <div class="period-tab">90d</div><div class="period-tab">1a</div>
+    </div>
+  </div>
+  <div class="content">
+    <!-- KPIs -->
+    <div class="kpi-grid fade-in">
+      <div class="kpi" style="--kpi-color:var(--gold);--kpi-glow:var(--gold-glow)">
+        <div class="kpi-icon">💰</div><div class="kpi-label">Receita Total</div>
+        <div class="kpi-value" id="k1">R$ 0</div>
+        <div class="kpi-change up">↑ 18.4% vs mês anterior</div>
+      </div>
+      <div class="kpi" style="--kpi-color:var(--blue);--kpi-glow:var(--blue-glow)">
+        <div class="kpi-icon">👥</div><div class="kpi-label">Novos Associados</div>
+        <div class="kpi-value" id="k2">0</div>
+        <div class="kpi-change up">↑ 12.1% vs mês anterior</div>
+      </div>
+      <div class="kpi" style="--kpi-color:var(--green);--kpi-glow:rgba(0,230,118,0.3)">
+        <div class="kpi-icon">🎓</div><div class="kpi-label">Cursos Vendidos</div>
+        <div class="kpi-value" id="k3">0</div>
+        <div class="kpi-change up">↑ 8.7% vs mês anterior</div>
+      </div>
+      <div class="kpi" style="--kpi-color:var(--purple);--kpi-glow:rgba(187,134,252,0.3)">
+        <div class="kpi-icon">🏆</div><div class="kpi-label">Certificados</div>
+        <div class="kpi-value" id="k4">0</div>
+        <div class="kpi-change up">↑ 22.3% vs mês anterior</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-row fade-in">
+      <div class="chart-card">
+        <div class="chart-title">Receita Mensal</div>
+        <div class="chart-sub">Assinaturas vs Cursos avulsos — últimos 7 meses</div>
+        <div class="bar-chart" id="barChart"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Distribuição por Plano</div>
+        <div class="chart-sub">Associados ativos</div>
+        <div class="donut-wrap">
+          <svg class="donut-svg" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="45" fill="none" stroke="var(--dark3)" stroke-width="20"/>
+            <circle cx="60" cy="60" r="45" fill="none" stroke="var(--blue)" stroke-width="20" stroke-dasharray="141 141" stroke-dashoffset="0" stroke-linecap="butt" transform="rotate(-90 60 60)" id="donut1" style="transition:stroke-dasharray 1.5s ease"/>
+            <circle cx="60" cy="60" r="45" fill="none" stroke="var(--gold)" stroke-width="20" stroke-dasharray="0 141" stroke-dashoffset="-141" transform="rotate(-90 60 60)" id="donut2" style="transition:stroke-dasharray 1.5s ease 0.2s"/>
+            <circle cx="60" cy="60" r="45" fill="none" stroke="var(--green)" stroke-width="20" stroke-dasharray="0 141" stroke-dashoffset="-200" transform="rotate(-90 60 60)" id="donut3" style="transition:stroke-dasharray 1.5s ease 0.4s"/>
+            <text x="60" y="55" text-anchor="middle" fill="var(--text)" font-family="Rajdhani" font-size="18" font-weight="700">12k</text>
+            <text x="60" y="70" text-anchor="middle" fill="var(--text-dim)" font-family="Exo 2" font-size="9">associados</text>
+          </svg>
+          <div class="donut-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Essencial — 45%</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Profissional — 38%</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Associação — 17%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="bottom-row fade-in">
+      <div class="tbl-card">
+        <div class="tbl-title">Membros Recentes <a href="associados.html">Ver todos →</a></div>
+        <table><thead><tr><th>Nome</th><th>Plano</th><th>Status</th></tr></thead><tbody>
+          <tr><td>Ana Souza</td><td style="color:var(--gold)">Profissional</td><td><span class="pill pill-green">Ativo</span></td></tr>
+          <tr><td>Carlos Lima</td><td style="color:var(--blue)">Essencial</td><td><span class="pill pill-green">Ativo</span></td></tr>
+          <tr><td>Maria Costa</td><td style="color:var(--gold)">Profissional</td><td><span class="pill pill-gold">Pendente</span></td></tr>
+          <tr><td>João Silva</td><td style="color:var(--green)">Associação</td><td><span class="pill pill-green">Ativo</span></td></tr>
+          <tr><td>Paula Rocha</td><td style="color:var(--blue)">Essencial</td><td><span class="pill pill-red">Inativo</span></td></tr>
+        </tbody></table>
+      </div>
+      <div class="tbl-card">
+        <div class="tbl-title">Top Cursos <a href="cursos.html">Gerenciar →</a></div>
+        <table><thead><tr><th>Curso</th><th>Matrículas</th><th>Receita</th></tr></thead><tbody>
+          <tr><td>IA Aplicada</td><td style="color:var(--blue)">2.341</td><td style="color:var(--gold)">R$ 46k</td></tr>
+          <tr><td>Compliance</td><td style="color:var(--blue)">1.840</td><td style="color:var(--gold)">R$ 54k</td></tr>
+          <tr><td>Oratória</td><td style="color:var(--blue)">2.140</td><td style="color:var(--gold)">R$ 42k</td></tr>
+          <tr><td>Liderança</td><td style="color:var(--blue)">1.280</td><td style="color:var(--gold)">R$ 63k</td></tr>
+          <tr><td>LGPD</td><td style="color:var(--blue)">980</td><td style="color:var(--gold)">R$ 29k</td></tr>
+        </tbody></table>
+      </div>
+      <div class="tbl-card">
+        <div class="tbl-title">Atividade Recente</div>
+        <div class="feed" id="feed">
+          <div class="feed-item"><div class="feed-dot green"></div><div><div>Ana Souza concluiu "IA Aplicada"</div><div class="feed-time">agora mesmo</div></div></div>
+          <div class="feed-item"><div class="feed-dot blue"></div><div><div>Carlos Lima se matriculou em Oratória</div><div class="feed-time">2 min atrás</div></div></div>
+          <div class="feed-item"><div class="feed-dot gold"></div><div><div>Novo certificado emitido — Maria Costa</div><div class="feed-time">5 min atrás</div></div></div>
+          <div class="feed-item"><div class="feed-dot blue"></div><div><div>João Silva atualizou o plano para Associação</div><div class="feed-time">12 min atrás</div></div></div>
+          <div class="feed-item"><div class="feed-dot green"></div><div><div>Novo curso publicado: Liderança Ágil</div><div class="feed-time">18 min atrás</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+// Animate KPIs
+function animCount(id,target,prefix='',suffix=''){
+  let n=0,step=target/60;
+  const el=document.getElementById(id);
+  const t=setInterval(()=>{n+=step;if(n>=target){n=target;clearInterval(t);}
+  el.textContent=prefix+(n>=1000?'R$ '+(n/1000).toFixed(0)+'k':Math.floor(n))+suffix;},20);
+}
+setTimeout(()=>{
+  animCount('k1',248000,'R$ ');
+  document.getElementById('k1').textContent='R$ 248k';
+  animCount('k2',347);animCount('k3',1284);animCount('k4',892);
+},300);
+
+// Bar chart
+const months=['Ago','Set','Out','Nov','Dez','Jan','Fev'];
+const data=[[42,18],[55,22],[48,25],[61,30],[74,28],[88,35],[96,40]];
+const chart=document.getElementById('barChart');
+const max=136;
+months.forEach((m,i)=>{
+  const g=document.createElement('div');g.className='bar-group';
+  g.innerHTML=`<div class="bar-wrap">
+    <div class="bar blue" style="height:${(data[i][0]/max*100)}px" title="Assinaturas: R$ ${data[i][0]}k"></div>
+    <div class="bar gold" style="height:${(data[i][1]/max*100)}px" title="Avulso: R$ ${data[i][1]}k"></div>
+  </div><div class="bar-label">${m}</div>`;
+  chart.appendChild(g);
+});
+
+// Donut animation
+setTimeout(()=>{
+  document.getElementById('donut1').setAttribute('stroke-dasharray','64 141');
+  document.getElementById('donut2').setAttribute('stroke-dasharray','54 141');
+  document.getElementById('donut2').style.strokeDashoffset='-64';
+  document.getElementById('donut3').setAttribute('stroke-dasharray','24 141');
+  document.getElementById('donut3').style.strokeDashoffset='-118';
+},400);
+
+// Period tabs
+document.querySelectorAll('.period-tab').forEach(t=>t.addEventListener('click',function(){
+  document.querySelectorAll('.period-tab').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active');
+}));
+</script>
+</body></html>

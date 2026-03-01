@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Li7erae — Área do Associado</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#00B4FF;--blue-dim:rgba(0,180,255,0.12);--blue-glow:rgba(0,180,255,0.28);
+  --gold:#F5A623;--gold-bright:#FFB940;--gold-dim:rgba(245,166,35,0.14);--gold-glow:rgba(245,166,35,0.4);
+  --green:#00E676;--green-dim:rgba(0,230,118,0.1);--red:#FF5252;--red-dim:rgba(255,82,82,0.1);
+  --purple:#BB86FC;
+  --black:#050810;--dark:#080D18;--dark2:#0D1525;--dark3:#121D30;--dark4:#162038;
+  --text:#E8F4FF;--text-mid:#8AADCC;--text-dim:#3D5570;
+  --line:rgba(0,180,255,0.1);--line-gold:rgba(245,166,35,0.18);
+  --gold-line:rgba(245,166,35,0.18);--gold-light:#FFB940;
+  --sidebar-w:240px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{overflow:hidden;}
+body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;font-weight:300;display:flex;height:100vh;overflow:hidden;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:#333;border-radius:2px;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--dark);border-right:1px solid var(--gold-line);display:flex;flex-direction:column;height:100vh;overflow-y:auto;}
+.sidebar-logo{padding:26px 22px 22px;border-bottom:1px solid rgba(201,169,110,0.08);}
+.logo-text{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:500;letter-spacing:0.06em;color:var(--text);text-decoration:none;}
+.logo-text span{color:var(--gold);}
+.logo-sub{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-dim);margin-top:4px;}
+.sidebar-section{padding:18px 14px 6px;}
+.sidebar-section-label{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim);font-weight:500;padding:0 8px;margin-bottom:5px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;color:var(--text-dim);font-size:13px;font-weight:400;cursor:pointer;transition:all 0.2s;position:relative;text-decoration:none;margin-bottom:2px;}
+.nav-item:hover{color:var(--text-mid);background:rgba(255,255,255,0.03);}
+.nav-item.active{color:var(--gold);background:rgba(201,169,110,0.07);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;background:var(--gold);}
+.nav-icon{width:18px;text-align:center;font-size:14px;}
+.sidebar-spacer{flex:1;}
+.sidebar-user{padding:14px;border-top:1px solid rgba(201,169,110,0.08);display:flex;align-items:center;gap:10px;cursor:pointer;}
+.user-avatar{width:34px;height:34px;background:linear-gradient(135deg,#8B6A35,var(--gold));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--black);flex-shrink:0;}
+.user-name{font-size:12px;font-weight:500;color:var(--text);}
+.user-role{font-size:10px;color:var(--text-dim);margin-top:1px;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* VIEWS */
+.view{display:none;flex:1;flex-direction:column;height:100%;overflow:hidden;}
+.view.active{display:flex;}
+
+/* ── TOPBAR ── */
+.topbar{height:60px;border-bottom:1px solid var(--gold-line);display:flex;align-items:center;padding:0 28px;gap:16px;flex-shrink:0;background:var(--dark);}
+.topbar-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:400;}
+.topbar-sub{font-size:11px;color:var(--text-dim);margin-top:2px;}
+.topbar-spacer{flex:1;}
+.topbar-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(201,169,110,0.12);color:var(--text-dim);font-size:13px;cursor:pointer;transition:all 0.2s;position:relative;}
+.topbar-btn:hover{border-color:rgba(201,169,110,0.4);color:var(--gold);}
+.notif-dot{position:absolute;top:7px;right:7px;width:5px;height:5px;background:var(--gold);border-radius:50%;}
+
+/* ── DASHBOARD VIEW ── */
+.dash-content{flex:1;overflow-y:auto;padding:28px;}
+.welcome-bar{background:var(--dark2);border:1px solid rgba(201,169,110,0.12);padding:28px 32px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;}
+.welcome-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.welcome-title{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:400;margin-bottom:4px;}
+.welcome-title em{font-style:italic;color:var(--gold);}
+.welcome-sub{font-size:13px;color:var(--text-dim);}
+.welcome-streak{text-align:right;}
+.streak-n{font-family:'Rajdhani',sans-serif;font-size:40px;font-weight:300;color:var(--gold);display:block;line-height:1;}
+.streak-l{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);}
+
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.section-title-sm{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:500;}
+.section-link{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);cursor:pointer;font-weight:500;}
+
+/* My Courses */
+.my-courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+.my-course-card{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);overflow:hidden;cursor:pointer;transition:all 0.3s;}
+.my-course-card:hover{border-color:rgba(201,169,110,0.35);transform:translateY(-3px);}
+.mcc-thumb{height:120px;position:relative;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.mcc-play{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;}
+.my-course-card:hover .mcc-play{opacity:1;}
+.play-circle{width:44px;height:44px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:16px;}
+.mcc-body{padding:18px;}
+.mcc-cat{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:6px;}
+.mcc-title{font-size:14px;font-weight:500;color:var(--text);line-height:1.3;margin-bottom:10px;}
+.mcc-prog-wrap{height:2px;background:rgba(255,255,255,0.08);border-radius:1px;margin-bottom:6px;}
+.mcc-prog-fill{height:100%;border-radius:1px;background:var(--gold);}
+.mcc-prog-text{font-size:10px;color:var(--text-dim);display:flex;justify-content:space-between;}
+
+/* Certs & Stats */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.dash-card{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);padding:24px;}
+.cert-list{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+.cert-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--dark3);border:1px solid rgba(201,169,110,0.08);cursor:pointer;transition:background 0.2s;}
+.cert-item:hover{background:var(--dark4);}
+.cert-icon{font-size:20px;flex-shrink:0;}
+.cert-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.cert-date{font-size:11px;color:var(--text-dim);}
+.cert-download{margin-left:auto;font-size:11px;color:var(--gold);font-weight:500;}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+.stat-box{background:var(--dark3);border:1px solid rgba(201,169,110,0.08);padding:16px;text-align:center;}
+.stat-box-n{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:300;color:var(--gold);display:block;line-height:1;}
+.stat-box-l{font-size:10px;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;display:block;}
+
+/* ── PLAYER VIEW ── */
+.player-wrap{flex:1;display:flex;overflow:hidden;}
+.video-col{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.video-area{background:#000;position:relative;width:100%;}
+.video-area video{width:100%;display:block;max-height:480px;object-fit:cover;}
+.video-placeholder{width:100%;aspect-ratio:16/9;max-height:480px;background:linear-gradient(135deg,#0A0A0A,#1A1A1A);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;position:relative;cursor:pointer;}
+.big-play{width:72px;height:72px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--gold);transition:all 0.3s;cursor:pointer;}
+.big-play:hover{background:rgba(201,169,110,0.1);transform:scale(1.08);}
+.vp-course-label{font-family:'Rajdhani',sans-serif;font-size:18px;color:var(--text-dim);font-style:italic;}
+.video-controls{background:var(--dark2);border-top:1px solid rgba(201,169,110,0.08);padding:14px 20px;}
+.progress-wrap{width:100%;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;cursor:pointer;margin-bottom:12px;position:relative;}
+.progress-fill{height:100%;background:var(--gold);border-radius:2px;width:38%;transition:width 0.3s;}
+.progress-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:11px;height:11px;background:var(--gold);border-radius:50%;left:38%;transition:left 0.3s;}
+.controls-row{display:flex;align-items:center;gap:14px;}
+.ctrl-btn{background:none;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;transition:color 0.2s;padding:4px;}
+.ctrl-btn:hover{color:var(--text);}
+.ctrl-btn.play-pause{width:36px;height:36px;background:var(--gold);color:var(--black);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;}
+.ctrl-btn.play-pause:hover{background:var(--gold-light);}
+.time-display{font-size:12px;color:var(--text-dim);font-weight:400;letter-spacing:0.05em;}
+.ctrl-spacer{flex:1;}
+.volume-wrap{display:flex;align-items:center;gap:8px;}
+.volume-bar{width:70px;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;cursor:pointer;}
+.volume-fill{height:100%;background:var(--text-dim);border-radius:2px;width:65%;}
+.speed-btn{font-size:11px;color:var(--text-dim);font-weight:500;cursor:pointer;padding:4px 8px;border:1px solid rgba(255,255,255,0.1);transition:all 0.2s;letter-spacing:0.05em;}
+.speed-btn:hover{border-color:rgba(201,169,110,0.4);color:var(--gold);}
+
+/* Lesson info below video */
+.lesson-info{padding:24px 24px 16px;border-top:1px solid rgba(201,169,110,0.08);}
+.lesson-title-big{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:500;margin-bottom:6px;}
+.lesson-meta-row{display:flex;align-items:center;gap:20px;font-size:12px;color:var(--text-dim);margin-bottom:12px;}
+.lesson-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.lesson-tag{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;padding:3px 10px;background:var(--gold-dim);color:var(--gold);font-weight:500;}
+.lesson-notes{flex:1;overflow-y:auto;padding:0 24px 20px;}
+.notes-title{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);font-weight:500;margin-bottom:10px;}
+.notes-area{width:100%;background:var(--dark3);border:1px solid rgba(201,169,110,0.1);color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:300;padding:14px;resize:none;outline:none;height:120px;line-height:1.7;}
+.notes-area:focus{border-color:rgba(201,169,110,0.4);}
+
+/* Lesson list */
+.lesson-list-col{width:320px;min-width:320px;background:var(--dark);border-left:1px solid var(--gold-line);display:flex;flex-direction:column;overflow:hidden;}
+.ll-header{padding:18px 20px;border-bottom:1px solid rgba(201,169,110,0.08);}
+.ll-course-name{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:500;margin-bottom:4px;}
+.ll-prog-wrap{height:2px;background:rgba(255,255,255,0.08);margin-bottom:5px;}
+.ll-prog-fill{height:100%;background:var(--gold);width:38%;}
+.ll-prog-text{font-size:10px;color:var(--text-dim);display:flex;justify-content:space-between;}
+.ll-scroll{flex:1;overflow-y:auto;}
+.module-group{border-bottom:1px solid rgba(255,255,255,0.04);}
+.module-header{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.2s;}
+.module-header:hover{background:rgba(255,255,255,0.02);}
+.module-name{font-size:12px;font-weight:500;color:var(--text-mid);letter-spacing:0.05em;}
+.module-count{font-size:10px;color:var(--text-dim);}
+.lesson-item{display:flex;align-items:center;gap:12px;padding:11px 20px 11px 28px;cursor:pointer;transition:background 0.2s;border-bottom:1px solid rgba(255,255,255,0.03);}
+.lesson-item:hover{background:rgba(255,255,255,0.025);}
+.lesson-item.playing{background:rgba(201,169,110,0.07);}
+.lesson-item.done .li-check{background:var(--green);border-color:var(--green);}
+.li-check{width:16px;height:16px;border:1.5px solid rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;flex-shrink:0;transition:all 0.2s;}
+.lesson-item.playing .li-check{border-color:var(--gold);}
+.li-info{flex:1;min-width:0;}
+.li-name{font-size:12px;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400;}
+.lesson-item.playing .li-name{color:var(--gold);font-weight:500;}
+.li-dur{font-size:10px;color:var(--text-dim);margin-top:2px;}
+.li-type{font-size:10px;color:var(--text-dim);flex-shrink:0;}
+
+/* ANIM */
+.fade-in{animation:fadeIn 0.5s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a class="logo-wrap" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none"><div style="width:32px;height:32px;background:#F5A623;display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-weight:700;font-size:16px;color:#000;clip-path:polygon(5px 0%,calc(100% - 5px) 0%,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0% calc(100% - 5px),0% 5px);box-shadow:0 0 12px rgba(245,166,35,0.4)">7</div><span style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;letter-spacing:0.1em;color:#E8F4FF">LI<span style=color:#F5A623>7</span>ERAE</span></a>
+    <div class="logo-sub">Área do Associado</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Minha conta</div>
+    <a class="nav-item active" href="#" data-view="dashboard"><span class="nav-icon">⬡</span> Início</a>
+    <a class="nav-item" href="#" data-view="player"><span class="nav-icon">▶</span> Meus Cursos</a>
+    <a class="nav-item" href="#"><span class="nav-icon">📜</span> Certificados</a>
+    <a class="nav-item" href="#"><span class="nav-icon">👤</span> Perfil</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Explorar</div>
+    <a class="nav-item" href="#"><span class="nav-icon">🔍</span> Catálogo</a>
+    <a class="nav-item" href="#"><span class="nav-icon">👥</span> Comunidade</a>
+    <a class="nav-item" href="#"><span class="nav-icon">🏛️</span> Minha Associação</a>
+    <a class="nav-item" href="#"><span class="nav-icon">🗓️</span> Eventos</a>
+  </div>
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-user">
+    <div class="user-avatar">AN</div>
+    <div>
+      <div class="user-name">Ana Nóbrega</div>
+      <div class="user-role">Plano Profissional</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ── DASHBOARD VIEW ── -->
+  <div class="view active" id="view-dashboard">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Olá, Ana 👋</div>
+        <div class="topbar-sub">Domingo, 1 de março de 2026</div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-btn">🔍</div>
+      <div class="topbar-btn">🔔<div class="notif-dot"></div></div>
+    </div>
+    <div class="dash-content">
+      <!-- Welcome -->
+      <div class="welcome-bar fade-in">
+        <div>
+          <div class="welcome-title">Continue aprendendo,<br><em>Ana.</em></div>
+          <div class="welcome-sub">Você está a 2 aulas de concluir Compliance & Governança</div>
+        </div>
+        <div class="welcome-streak">
+          <span class="streak-n">14</span>
+          <span class="streak-l">dias seguidos</span>
+        </div>
+      </div>
+
+      <!-- Meus Cursos -->
+      <div class="section-head">
+        <div class="section-title-sm">Cursos em andamento</div>
+        <div class="section-link" onclick="switchView('player')">Ver todos →</div>
+      </div>
+      <div class="my-courses-grid fade-in">
+        <div class="my-course-card" onclick="switchView('player')">
+          <div class="mcc-thumb" style="background:linear-gradient(135deg,#0A0A1A,rgba(201,169,110,0.12));">
+            ⚖️
+            <div class="mcc-play"><div class="play-circle">▶</div></div>
+          </div>
+          <div class="mcc-body">
+            <div class="mcc-cat">Direito</div>
+            <div class="mcc-title">Compliance & Governança para Associações</div>
+            <div class="mcc-prog-wrap"><div class="mcc-prog-fill" style="width:68%"></div></div>
+            <div class="mcc-prog-text"><span>68% concluído</span><span>9/14 aulas</span></div>
+          </div>
+        </div>
+        <div class="my-course-card" onclick="switchView('player')">
+          <div class="mcc-thumb" style="background:linear-gradient(135deg,#0A1A0A,rgba(76,175,125,0.1));">
+            📈
+            <div class="mcc-play"><div class="play-circle">▶</div></div>
+          </div>
+          <div class="mcc-body">
+            <div class="mcc-cat">Gestão</div>
+            <div class="mcc-title">Planejamento Estratégico para Líderes</div>
+            <div class="mcc-prog-wrap"><div class="mcc-prog-fill" style="width:30%"></div></div>
+            <div class="mcc-prog-text"><span>30% concluído</span><span>5/18 aulas</span></div>
+          </div>
+        </div>
+        <div class="my-course-card" onclick="switchView('player')">
+          <div class="mcc-thumb" style="background:linear-gradient(135deg,#1A0A1A,rgba(91,141,217,0.1));">
+            🎙️
+            <div class="mcc-play"><div class="play-circle">▶</div></div>
+          </div>
+          <div class="mcc-body">
+            <div class="mcc-cat">Comunicação</div>
+            <div class="mcc-title">Oratória e Persuasão Profissional</div>
+            <div class="mcc-prog-wrap"><div class="mcc-prog-fill" style="width:10%"></div></div>
+            <div class="mcc-prog-text"><span>10% concluído</span><span>1/8 aulas</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom -->
+      <div class="bottom-grid fade-in">
+        <div class="dash-card">
+          <div class="section-head" style="margin-bottom:0;">
+            <div class="section-title-sm">Certificados</div>
+            <div class="section-link">Ver todos →</div>
+          </div>
+          <div class="cert-list">
+            <div class="cert-item">
+              <div class="cert-icon">🏅</div>
+              <div>
+                <div class="cert-name">Direito Digital & LGPD</div>
+                <div class="cert-date">Emitido em 12 jan 2026</div>
+              </div>
+              <div class="cert-download">↓ PDF</div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon">🏅</div>
+              <div>
+                <div class="cert-name">Liderança Organizacional</div>
+                <div class="cert-date">Emitido em 8 dez 2025</div>
+              </div>
+              <div class="cert-download">↓ PDF</div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon">🏅</div>
+              <div>
+                <div class="cert-name">Gestão de Conflitos</div>
+                <div class="cert-date">Emitido em 2 out 2025</div>
+              </div>
+              <div class="cert-download">↓ PDF</div>
+            </div>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="section-title-sm">Meu Progresso</div>
+          <div class="stat-grid">
+            <div class="stat-box">
+              <span class="stat-box-n">47</span>
+              <span class="stat-box-l">Aulas concluídas</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-box-n">3</span>
+              <span class="stat-box-l">Certificados</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-box-n">28h</span>
+              <span class="stat-box-l">Horas estudadas</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-box-n">14🔥</span>
+              <span class="stat-box-l">Sequência atual</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PLAYER VIEW ── -->
+  <div class="view" id="view-player">
+    <div class="topbar">
+      <button onclick="switchView('dashboard')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;">← Voltar</button>
+      <div style="margin-left:12px;">
+        <div class="topbar-title">Compliance & Governança</div>
+        <div class="topbar-sub">Módulo 3 · Aula 9</div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-btn" title="Fullscreen">⛶</div>
+    </div>
+    <div class="player-wrap fade-in">
+      <!-- VIDEO COL -->
+      <div class="video-col">
+        <div class="video-area">
+          <div class="video-placeholder" id="videoPlaceholder" onclick="togglePlay()">
+            <div class="big-play" id="bigPlay">▶</div>
+            <div class="vp-course-label">Aula 9 — Estruturas de Compliance nas Associações</div>
+          </div>
+        </div>
+        <!-- Controls -->
+        <div class="video-controls">
+          <div class="progress-wrap" onclick="seekVideo(event)">
+            <div class="progress-fill" id="progFill"></div>
+            <div class="progress-thumb" id="progThumb"></div>
+          </div>
+          <div class="controls-row">
+            <button class="ctrl-btn">⏮</button>
+            <button class="ctrl-btn play-pause" id="playPauseBtn" onclick="togglePlay()">▶</button>
+            <button class="ctrl-btn">⏭</button>
+            <div class="time-display" id="timeDisplay">00:00 / 18:32</div>
+            <div class="ctrl-spacer"></div>
+            <div class="volume-wrap">
+              <span style="font-size:13px;color:var(--text-dim);">🔊</span>
+              <div class="volume-bar"><div class="volume-fill"></div></div>
+            </div>
+            <button class="speed-btn" onclick="cycleSpeed(this)">1×</button>
+            <button class="ctrl-btn" title="Legenda">CC</button>
+            <button class="ctrl-btn" title="PiP">⧉</button>
+          </div>
+        </div>
+        <!-- Lesson info -->
+        <div class="lesson-info">
+          <div class="lesson-title-big">Estruturas de Compliance nas Associações</div>
+          <div class="lesson-meta-row">
+            <span>⏱ 18 min</span>
+            <span>📁 Material disponível</span>
+            <span>💬 24 comentários</span>
+          </div>
+          <div class="lesson-tags">
+            <span class="lesson-tag">Compliance</span>
+            <span class="lesson-tag">Governança</span>
+            <span class="lesson-tag">Associações</span>
+          </div>
+        </div>
+        <div class="lesson-notes">
+          <div class="notes-title">Minhas anotações</div>
+          <textarea class="notes-area" placeholder="Anote pontos importantes desta aula..."></textarea>
+        </div>
+      </div>
+
+      <!-- LESSON LIST -->
+      <div class="lesson-list-col">
+        <div class="ll-header">
+          <div class="ll-course-name">Compliance & Governança</div>
+          <div class="ll-prog-wrap"><div class="ll-prog-fill"></div></div>
+          <div class="ll-prog-text"><span>68% — 9/14 aulas</span><span>6h 20min</span></div>
+        </div>
+        <div class="ll-scroll">
+
+          <div class="module-group">
+            <div class="module-header">
+              <div class="module-name">Módulo 1 · Fundamentos</div>
+              <div class="module-count">4/4 ✓</div>
+            </div>
+            <div class="lesson-item done" onclick="selectLesson(this)">
+              <div class="li-check">✓</div>
+              <div class="li-info"><div class="li-name">Introdução ao Compliance</div><div class="li-dur">12 min</div></div>
+              <div class="li-type">▶</div>
+            </div>
+            <div class="lesson-item done" onclick="selectLesson(this)">
+              <div class="li-check">✓</div>
+              <div class="li-info"><div class="li-name">Conceitos e Legislação Base</div><div class="li-dur">22 min</div></div>
+              <div class="li-type">▶</div>
+            </div>
+            <div class="lesson-item done" onclick="selectLesson(this)">
+              <div class="li-check">✓</div>
+              <div class="li-info"><div class="li-name">Órgãos Reguladores</div><div class="li-dur">18 min</div></div>
+              <div class="li-type">▶</div>
+            </div>
+            <div class="lesson-item done" onclick="selectLesson(this)">
+              <div class="li-check">✓</div>
+              <div class="li-info"><div class="li-name">Quiz — Módulo 1</div><div class="li-dur">10 min</div></div>
+              <div class="li-type">📋</div>
+            </div>
+          </div>
+
+          <div class="module-group">
+            <div class="module-header">
+              <div class="module-name">Módulo 2 · Governança</div>
+              <div class="module-count">4/4 ✓</div>
+            </div>
+            <div class="lesson-item done" onclick="selectLesson(this)">
+              <div class="li-check">✓</div>
+              <div class="li-info"><div class="li-name">Estruturas de Governança</div><div class="li-dur">25 min</div></div>
+              <div class="li-type">▶</div>
+            </div>
+            <div class="lesson-item done" onclick="selectLesson(this)">
+              <div class="li-check">✓</div>
+              <div class="li-info"><div class="li-name">Conselho Fiscal e Diretoria</div><div class="li-dur">20 min</div></div>
+              <div class="li-type">▶</div>
+            </div>
+            <div class="lesson-item done" onclick="selectLesson(this)">
+              <div class="li-check">✓</div>
+              <div class="li-info"><div class="li-name">Estatutos e Regimentos</div><div class="li-dur">16 min</div></div>
+              <div class="li-type">📄</div>
+            </div>
+            <div class="lesson-item done" onclick="selectLesson(this)">
+              <div class="li-check">✓</div>
+              <div class="li-info"><div class="li-name">Estudo de Caso Prático</div><div class="li-dur">28 min</div></div>
+              <div class="li-type">▶</div>
+            </div>
+          </div>
+
+          <div class="module-group">
+            <div class="module-header">
+              <div class="module-name">Módulo 3 · Implementação</div>
+              <div class="module-count">1/4</div>
+            </div>
+            <div class="lesson-item done" onclick="selectLesson(this)">
+              <div class="li-check">✓</div>
+              <div class="li-info"><div class="li-name">Mapeamento de Riscos</div><div class="li-dur">24 min</div></div>
+              <div class="li-type">▶</div>
+            </div>
+            <div class="lesson-item playing" onclick="selectLesson(this)">
+              <div class="li-check"></div>
+              <div class="li-info"><div class="li-name">Estruturas de Compliance nas Ass.</div><div class="li-dur">18 min</div></div>
+              <div class="li-type">▶</div>
+            </div>
+            <div class="lesson-item" onclick="selectLesson(this)">
+              <div class="li-check"></div>
+              <div class="li-info"><div class="li-name">Canais de Denúncia</div><div class="li-dur">15 min</div></div>
+              <div class="li-type">▶</div>
+            </div>
+            <div class="lesson-item" onclick="selectLesson(this)">
+              <div class="li-check"></div>
+              <div class="li-info"><div class="li-name">Relatórios e Prestação de Contas</div><div class="li-dur">20 min</div></div>
+              <div class="li-type">▶</div>
+            </div>
+          </div>
+
+          <div class="module-group">
+            <div class="module-header">
+              <div class="module-name">Módulo 4 · Avançado</div>
+              <div class="module-count">0/2</div>
+            </div>
+            <div class="lesson-item" onclick="selectLesson(this)">
+              <div class="li-check"></div>
+              <div class="li-info"><div class="li-name">Compliance e LGPD</div><div class="li-dur">30 min</div></div>
+              <div class="li-type">🔒</div>
+            </div>
+            <div class="lesson-item" onclick="selectLesson(this)">
+              <div class="li-check"></div>
+              <div class="li-info"><div class="li-name">Avaliação Final + Certificado</div><div class="li-dur">45 min</div></div>
+              <div class="li-type">🔒</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+function switchView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  document.querySelectorAll('.nav-item[data-view]').forEach(el => {
+    el.classList.toggle('active', el.dataset.view === v);
+  });
+}
+document.querySelectorAll('.nav-item[data-view]').forEach(el => {
+  el.addEventListener('click', e => { e.preventDefault(); switchView(el.dataset.view); });
+});
+
+// Player
+let playing = false, progress = 38, elapsed = 411; // 6:51 of 18:32 (= 1112s)
+const totalSec = 1112;
+
+function togglePlay() {
+  playing = !playing;
+  const btn = document.getElementById('playPauseBtn');
+  const bigPlay = document.getElementById('bigPlay');
+  btn.textContent = playing ? '⏸' : '▶';
+  bigPlay.textContent = playing ? '⏸' : '▶';
+  document.getElementById('videoPlaceholder').style.background = playing
+    ? 'linear-gradient(135deg,#000,#0A0A14)'
+    : 'linear-gradient(135deg,#0A0A0A,#1A1A1A)';
+  if (playing) tick();
+}
+
+function tick() {
+  if (!playing) return;
+  elapsed = Math.min(elapsed + 1, totalSec);
+  progress = (elapsed / totalSec) * 100;
+  document.getElementById('progFill').style.width = progress + '%';
+  document.getElementById('progThumb').style.left = progress + '%';
+  document.getElementById('timeDisplay').textContent = fmt(elapsed) + ' / ' + fmt(totalSec);
+  if (elapsed < totalSec) setTimeout(tick, 1000);
+  else { playing = false; document.getElementById('playPauseBtn').textContent = '▶'; }
+}
+
+function fmt(s) {
+  const m = Math.floor(s/60), sec = s%60;
+  return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+}
+
+function seekVideo(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  progress = ((e.clientX - rect.left) / rect.width) * 100;
+  elapsed = Math.round((progress / 100) * totalSec);
+  document.getElementById('progFill').style.width = progress + '%';
+  document.getElementById('progThumb').style.left = progress + '%';
+  document.getElementById('timeDisplay').textContent = fmt(elapsed) + ' / ' + fmt(totalSec);
+}
+
+const speeds = ['0.75×','1×','1.25×','1.5×','2×'];
+let speedIdx = 1;
+function cycleSpeed(btn) { speedIdx = (speedIdx+1) % speeds.length; btn.textContent = speeds[speedIdx]; }
+
+function selectLesson(el) {
+  document.querySelectorAll('.lesson-item').forEach(i => i.classList.remove('playing'));
+  el.classList.add('playing');
+  playing = false;
+  document.getElementById('playPauseBtn').textContent = '▶';
+  document.getElementById('bigPlay').textContent = '▶';
+}
+</script>
+</body>
+</html>

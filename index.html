@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Li7erae — Plataforma de Cursos & Associações</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #00B4FF;
+  --blue-bright: #40CFFF;
+  --blue-dim: rgba(0,180,255,0.12);
+  --blue-glow: rgba(0,180,255,0.3);
+  --gold: #F5A623;
+  --gold-bright: #FFB940;
+  --gold-dim: rgba(245,166,35,0.15);
+  --gold-glow: rgba(245,166,35,0.4);
+  --black: #050810;
+  --dark: #080D18;
+  --dark2: #0D1525;
+  --dark3: #121D30;
+  --text: #E8F4FF;
+  --text-mid: #8AADCC;
+  --text-dim: #3D5570;
+  --line: rgba(0,180,255,0.1);
+  --line-gold: rgba(245,166,35,0.2);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--black); color:var(--text); font-family:'Exo 2',sans-serif; font-weight:300; overflow-x:hidden; }
+
+/* CIRCUIT BACKGROUND */
+.circuit-bg {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 50%, rgba(0,180,255,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 85% 20%, rgba(245,166,35,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 50% 100%, rgba(0,100,180,0.08) 0%, transparent 60%);
+}
+.circuit-svg {
+  position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.15;
+}
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:0 60px;
+  height:72px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid transparent;
+  transition:all 0.3s;
+}
+nav.scrolled {
+  background:rgba(5,8,16,0.95);
+  border-bottom-color:var(--line);
+  backdrop-filter:blur(20px);
+}
+.nav-logo {
+  display:flex; align-items:center; gap:14px;
+  text-decoration:none;
+}
+.nav-logo-icon {
+  width:38px; height:38px;
+  background:var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:22px;
+  color:var(--black);
+  clip-path:polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);
+  box-shadow:0 0 20px var(--gold-glow);
+}
+.nav-logo-text {
+  font-family:'Rajdhani',sans-serif; font-size:24px; font-weight:600;
+  letter-spacing:0.12em; color:var(--text);
+}
+.nav-logo-text span { color:var(--gold); }
+.nav-links { display:flex; align-items:center; gap:36px; }
+.nav-links a {
+  font-size:13px; font-weight:400; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--text-mid);
+  text-decoration:none; transition:color 0.2s;
+  position:relative;
+}
+.nav-links a::after {
+  content:''; position:absolute; bottom:-4px; left:0; right:0;
+  height:1px; background:var(--blue); transform:scaleX(0);
+  transition:transform 0.2s; transform-origin:left;
+}
+.nav-links a:hover { color:var(--blue); }
+.nav-links a:hover::after { transform:scaleX(1); }
+.nav-cta {
+  display:flex; align-items:center; gap:14px;
+}
+.btn-nav-ghost {
+  padding:9px 22px; border:1px solid var(--line);
+  color:var(--text-mid); font-family:'Rajdhani',sans-serif;
+  font-size:13px; font-weight:500; letter-spacing:0.12em;
+  text-transform:uppercase; text-decoration:none; transition:all 0.2s;
+  background:transparent;
+}
+.btn-nav-ghost:hover { border-color:var(--blue); color:var(--blue); }
+.btn-nav-primary {
+  padding:9px 24px;
+  background:linear-gradient(135deg, var(--gold), var(--gold-bright));
+  color:var(--black); font-family:'Rajdhani',sans-serif;
+  font-size:13px; font-weight:700; letter-spacing:0.12em;
+  text-transform:uppercase; text-decoration:none; transition:all 0.2s;
+  box-shadow:0 0 20px rgba(245,166,35,0.3);
+  clip-path:polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+}
+.btn-nav-primary:hover { box-shadow:0 0 30px rgba(245,166,35,0.5); transform:translateY(-1px); }
+
+/* HERO */
+.hero {
+  min-height:100vh;
+  display:flex; align-items:center;
+  padding:140px 60px 80px;
+  position:relative; z-index:1;
+}
+.hero-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center;
+  max-width:1300px; margin:0 auto; width:100%;
+}
+.hero-eyebrow {
+  display:flex; align-items:center; gap:12px;
+  font-size:11px; font-weight:500; letter-spacing:0.3em;
+  text-transform:uppercase; color:var(--blue);
+  margin-bottom:24px;
+}
+.hero-eyebrow::before {
+  content:''; width:40px; height:1px;
+  background:linear-gradient(90deg, transparent, var(--blue));
+}
+.hero-title {
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(48px,6vw,82px);
+  font-weight:700; line-height:0.95;
+  letter-spacing:0.02em;
+  margin-bottom:28px;
+}
+.hero-title .line1 { color:var(--text); display:block; }
+.hero-title .line2 { color:var(--blue); display:block; text-shadow:0 0 40px var(--blue-glow); }
+.hero-title .line3 { color:var(--gold); display:block; text-shadow:0 0 40px var(--gold-glow); }
+.hero-desc {
+  font-size:16px; line-height:1.8; color:var(--text-mid);
+  max-width:480px; margin-bottom:44px;
+}
+.hero-actions { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+.btn-hero-primary {
+  padding:16px 40px;
+  background:linear-gradient(135deg, var(--gold), var(--gold-bright));
+  color:var(--black); font-family:'Rajdhani',sans-serif;
+  font-size:15px; font-weight:700; letter-spacing:0.15em;
+  text-transform:uppercase; text-decoration:none;
+  transition:all 0.3s; box-shadow:0 0 30px rgba(245,166,35,0.4);
+  clip-path:polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  position:relative; overflow:hidden;
+}
+.btn-hero-primary::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+  transform:translateX(-100%); transition:transform 0.4s;
+}
+.btn-hero-primary:hover::before { transform:translateX(100%); }
+.btn-hero-primary:hover { box-shadow:0 0 50px rgba(245,166,35,0.6); }
+.btn-hero-ghost {
+  padding:15px 32px;
+  border:1px solid var(--blue);
+  color:var(--blue); font-family:'Rajdhani',sans-serif;
+  font-size:14px; font-weight:600; letter-spacing:0.12em;
+  text-transform:uppercase; text-decoration:none;
+  transition:all 0.3s; background:transparent;
+  display:flex; align-items:center; gap:10px;
+}
+.btn-hero-ghost:hover { background:var(--blue-dim); box-shadow:0 0 20px var(--blue-glow); }
+
+.hero-stats {
+  display:flex; gap:40px; padding-top:44px;
+  border-top:1px solid var(--line); margin-top:44px;
+}
+.stat-n {
+  font-family:'Rajdhani',sans-serif; font-size:38px; font-weight:700;
+  color:var(--blue); line-height:1;
+  text-shadow:0 0 20px var(--blue-glow);
+}
+.stat-n.gold { color:var(--gold); text-shadow:0 0 20px var(--gold-glow); }
+.stat-l { font-size:11px; color:var(--text-dim); letter-spacing:0.12em; text-transform:uppercase; margin-top:4px; }
+
+/* HERO VISUAL */
+.hero-visual { position:relative; }
+.hero-card {
+  background:var(--dark2);
+  border:1px solid var(--line);
+  padding:28px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-card::before {
+  content:''; position:absolute; top:0; left:0; right:0;
+  height:2px; background:linear-gradient(90deg, transparent, var(--blue), var(--gold), transparent);
+  animation:scanLine 3s ease-in-out infinite;
+}
+@keyframes scanLine { 0%,100%{opacity:0.5} 50%{opacity:1} }
+.hero-card-header {
+  display:flex; align-items:center; gap:14px; margin-bottom:24px;
+}
+.course-thumb {
+  width:56px; height:56px;
+  background:linear-gradient(135deg, var(--blue-dim), var(--dark3));
+  border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px;
+}
+.course-info-title { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:600; color:var(--text); }
+.course-info-sub { font-size:12px; color:var(--text-dim); margin-top:3px; }
+.progress-bar-wrap { margin-bottom:8px; }
+.progress-label { display:flex; justify-content:space-between; font-size:11px; color:var(--text-dim); margin-bottom:8px; letter-spacing:0.08em; }
+.progress-bar { height:4px; background:var(--dark3); position:relative; overflow:hidden; }
+.progress-fill {
+  height:100%; background:linear-gradient(90deg, var(--blue), var(--blue-bright));
+  box-shadow:0 0 8px var(--blue-glow);
+  animation:fillProgress 2s ease-out both;
+}
+@keyframes fillProgress { from{width:0} }
+.lessons-list { margin-top:20px; display:flex; flex-direction:column; gap:8px; }
+.lesson-item {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 12px;
+  background:var(--dark);
+  border:1px solid transparent;
+  font-size:13px; color:var(--text-mid);
+  transition:all 0.2s;
+}
+.lesson-item.active { border-color:var(--line); color:var(--blue); background:var(--blue-dim); }
+.lesson-dot { width:8px; height:8px; border:1.5px solid currentColor; flex-shrink:0; }
+.lesson-item.done .lesson-dot { background:var(--gold); border-color:var(--gold); }
+.lesson-item.active .lesson-dot { background:var(--blue); box-shadow:0 0 6px var(--blue-glow); }
+
+.floating-badge {
+  position:absolute;
+  background:var(--dark2); border:1px solid var(--gold);
+  padding:12px 16px;
+  font-size:12px; color:var(--gold);
+  font-family:'Rajdhani',sans-serif; font-weight:600; letter-spacing:0.08em;
+  box-shadow:0 0 20px rgba(245,166,35,0.2);
+  animation:float 4s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.badge-top { top:-24px; right:-24px; }
+.badge-bot { bottom:-24px; left:-24px; animation-delay:2s; border-color:var(--blue); color:var(--blue); box-shadow:0 0 20px var(--blue-glow); }
+
+/* SECTION BASE */
+section { padding:100px 60px; position:relative; z-index:1; }
+.section-inner { max-width:1300px; margin:0 auto; }
+.section-label {
+  font-size:10px; letter-spacing:0.3em; text-transform:uppercase;
+  color:var(--blue); font-weight:500; margin-bottom:16px;
+  display:flex; align-items:center; gap:12px;
+}
+.section-label::before { content:''; width:32px; height:1px; background:var(--blue); }
+.section-title {
+  font-family:'Rajdhani',sans-serif; font-size:clamp(36px,4vw,56px);
+  font-weight:700; line-height:1; margin-bottom:16px;
+}
+.section-desc { font-size:16px; color:var(--text-mid); line-height:1.7; max-width:560px; }
+
+/* FEATURES */
+.features-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+  background:var(--line); margin-top:72px;
+  border:1px solid var(--line);
+}
+.feature-card {
+  padding:40px; background:var(--dark);
+  transition:background 0.3s;
+  position:relative; overflow:hidden;
+}
+.feature-card::before {
+  content:''; position:absolute; top:0; left:0;
+  width:100%; height:2px;
+  background:linear-gradient(90deg, transparent, var(--blue), transparent);
+  transform:translateX(-100%); transition:transform 0.5s;
+}
+.feature-card:hover::before { transform:translateX(100%); }
+.feature-card:hover { background:var(--dark2); }
+.feature-icon {
+  width:48px; height:48px; margin-bottom:20px;
+  background:var(--blue-dim); border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+  clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px);
+}
+.feature-title { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:600; margin-bottom:10px; }
+.feature-desc { font-size:13px; color:var(--text-mid); line-height:1.7; }
+
+/* COURSES */
+.courses-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:60px; }
+.course-card {
+  background:var(--dark2); border:1px solid var(--line);
+  overflow:hidden; transition:all 0.3s; cursor:pointer;
+  position:relative;
+}
+.course-card:hover { border-color:var(--blue); transform:translateY(-4px); box-shadow:0 20px 40px rgba(0,0,0,0.4), 0 0 20px var(--blue-dim); }
+.course-card-thumb {
+  height:180px;
+  background:linear-gradient(135deg, var(--dark3), var(--dark));
+  display:flex; align-items:center; justify-content:center;
+  font-size:48px; position:relative; overflow:hidden;
+}
+.course-card-thumb::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(to bottom, transparent 50%, var(--dark2));
+}
+.course-badge-wrap { position:absolute; top:12px; left:12px; z-index:2; }
+.badge {
+  padding:4px 10px; font-size:10px; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase;
+  font-family:'Rajdhani',sans-serif;
+}
+.badge-blue { background:var(--blue); color:var(--black); }
+.badge-gold { background:var(--gold); color:var(--black); }
+.course-card-body { padding:20px; }
+.course-card-category { font-size:11px; color:var(--blue); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px; }
+.course-card-title { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:600; margin-bottom:10px; line-height:1.2; }
+.course-card-meta { display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:16px; border-top:1px solid var(--line); }
+.course-instructor { font-size:12px; color:var(--text-dim); }
+.course-price { font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:700; color:var(--gold); }
+.course-price.free { color:var(--blue); }
+.course-rating { display:flex; gap:3px; }
+.star { color:var(--gold); font-size:11px; }
+
+/* SOLIDARITY SECTION */
+.solidarity-section {
+  background:var(--dark);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+.solidarity-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.solidarity-visual {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+}
+.sol-card {
+  padding:24px; border:1px solid var(--line);
+  background:var(--dark2);
+  transition:all 0.3s;
+}
+.sol-card:hover { border-color:var(--blue); }
+.sol-card-icon { font-size:28px; margin-bottom:12px; }
+.sol-card-title { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:600; margin-bottom:6px; }
+.sol-card-desc { font-size:12px; color:var(--text-mid); line-height:1.6; }
+.sol-card.highlight { border-color:var(--gold); background:var(--gold-dim); grid-column:span 2; }
+.sol-counter { font-family:'Rajdhani',sans-serif; font-size:36px; font-weight:700; color:var(--gold); }
+
+/* PRICING */
+.pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:60px; }
+.pricing-card {
+  padding:40px; border:1px solid var(--line);
+  background:var(--dark2); position:relative; transition:all 0.3s;
+}
+.pricing-card:hover { transform:translateY(-4px); border-color:var(--blue); }
+.pricing-card.featured {
+  border-color:var(--gold);
+  background:linear-gradient(160deg, var(--dark2), rgba(245,166,35,0.05));
+  box-shadow:0 0 40px rgba(245,166,35,0.15);
+}
+.pricing-card.featured::before {
+  content:'MAIS POPULAR'; position:absolute; top:-1px; left:50%; transform:translateX(-50%);
+  background:var(--gold); color:var(--black); padding:4px 20px;
+  font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.2em;
+}
+.pricing-name { font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-mid); margin-bottom:16px; }
+.pricing-price { font-family:'Rajdhani',sans-serif; font-size:52px; font-weight:700; line-height:1; color:var(--text); margin-bottom:4px; }
+.pricing-price sup { font-size:22px; vertical-align:top; margin-top:12px; display:inline-block; }
+.pricing-period { font-size:12px; color:var(--text-dim); margin-bottom:32px; }
+.pricing-features { list-style:none; margin-bottom:36px; display:flex; flex-direction:column; gap:12px; }
+.pricing-features li { font-size:13px; color:var(--text-mid); display:flex; gap:10px; align-items:flex-start; line-height:1.5; }
+.pricing-features li::before { content:'▸'; color:var(--blue); flex-shrink:0; margin-top:1px; }
+.pricing-features li.gold-feat::before { color:var(--gold); }
+.btn-pricing {
+  width:100%; padding:14px;
+  font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:700;
+  letter-spacing:0.15em; text-transform:uppercase;
+  border:1px solid var(--blue); color:var(--blue);
+  background:transparent; cursor:pointer; transition:all 0.3s;
+}
+.btn-pricing:hover { background:var(--blue-dim); box-shadow:0 0 20px var(--blue-glow); }
+.btn-pricing.gold { border-color:var(--gold); color:var(--black); background:var(--gold); }
+.btn-pricing.gold:hover { background:var(--gold-bright); box-shadow:0 0 30px var(--gold-glow); }
+
+/* TESTIMONIALS */
+.testimonials-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:60px; }
+.testimonial {
+  padding:32px; background:var(--dark2); border:1px solid var(--line);
+  transition:all 0.3s;
+}
+.testimonial:hover { border-color:var(--line-gold); }
+.testimonial-text { font-size:14px; line-height:1.8; color:var(--text-mid); margin-bottom:24px; font-style:italic; }
+.testimonial-author { display:flex; align-items:center; gap:14px; }
+.testimonial-avatar {
+  width:40px; height:40px;
+  background:linear-gradient(135deg, var(--blue), var(--gold));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:16px; color:var(--black);
+  clip-path:polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+}
+.testimonial-name { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:600; }
+.testimonial-role { font-size:11px; color:var(--text-dim); }
+
+/* CTA */
+.cta-section {
+  text-align:center; padding:120px 60px;
+  position:relative; overflow:hidden;
+}
+.cta-section::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 60% 70% at 50% 50%, rgba(0,180,255,0.07) 0%, transparent 70%);
+}
+.cta-inner { position:relative; z-index:1; max-width:700px; margin:0 auto; }
+.cta-title { font-family:'Rajdhani',sans-serif; font-size:clamp(40px,6vw,72px); font-weight:700; line-height:1; margin-bottom:24px; }
+.cta-title span { color:var(--gold); }
+.cta-desc { font-size:16px; color:var(--text-mid); margin-bottom:48px; line-height:1.7; }
+.cta-actions { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; }
+
+/* FOOTER */
+footer {
+  padding:60px 60px 40px;
+  border-top:1px solid var(--line);
+  background:var(--dark);
+  position:relative; z-index:1;
+}
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:60px; margin-bottom:48px; max-width:1300px; margin:0 auto 48px; }
+.footer-logo-text { font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:600; letter-spacing:0.1em; }
+.footer-logo-text span { color:var(--gold); }
+.footer-about { font-size:13px; color:var(--text-dim); line-height:1.8; margin-top:16px; max-width:300px; }
+.footer-col-title { font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--blue); margin-bottom:20px; }
+.footer-links { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.footer-links a { font-size:13px; color:var(--text-dim); text-decoration:none; transition:color 0.2s; }
+.footer-links a:hover { color:var(--text); }
+.footer-bottom { padding-top:32px; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; max-width:1300px; margin:0 auto; }
+.footer-bottom p { font-size:12px; color:var(--text-dim); }
+.footer-socials { display:flex; gap:12px; }
+.social-link {
+  width:32px; height:32px; border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; color:var(--text-dim); text-decoration:none;
+  transition:all 0.2s;
+}
+.social-link:hover { border-color:var(--blue); color:var(--blue); }
+
+/* ANIMATIONS */
+.fade-up { opacity:0; transform:translateY(30px); animation:fadeUp 0.7s ease forwards; }
+@keyframes fadeUp { to{opacity:1;transform:none} }
+.delay-1 { animation-delay:0.1s }
+.delay-2 { animation-delay:0.2s }
+.delay-3 { animation-delay:0.3s }
+.delay-4 { animation-delay:0.4s }
+.delay-5 { animation-delay:0.5s }
+
+/* SCROLL REVEAL */
+.reveal { opacity:0; transform:translateY(24px); transition:opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity:1; transform:none; }
+
+@media(max-width:1024px){
+  nav { padding:0 32px; }
+  .hero { padding:120px 32px 60px; }
+  .hero-grid { grid-template-columns:1fr; gap:60px; }
+  .hero-visual { max-width:500px; }
+  section { padding:80px 32px; }
+  .features-grid { grid-template-columns:repeat(2,1fr); }
+  .courses-grid { grid-template-columns:repeat(2,1fr); }
+  .pricing-grid { grid-template-columns:1fr; max-width:400px; margin-left:auto; margin-right:auto; }
+  .testimonials-grid { grid-template-columns:1fr; }
+  .solidarity-grid { grid-template-columns:1fr; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:768px){
+  .nav-links { display:none; }
+  .features-grid { grid-template-columns:1fr; }
+  .courses-grid { grid-template-columns:1fr; }
+  .hero-stats { gap:24px; }
+  .footer-grid { grid-template-columns:1fr; }
+  .solidarity-visual { grid-template-columns:1fr; }
+  .sol-card.highlight { grid-column:span 1; }
+}
+</style>
+</head>
+<body>
+
+<!-- CIRCUIT SVG BACKGROUND -->
+<svg class="circuit-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#00B4FF" stroke-width="0.8" fill="none">
+    <line x1="0" y1="200" x2="200" y2="200"/>
+    <line x1="200" y1="200" x2="200" y2="100"/>
+    <line x1="200" y1="100" x2="400" y2="100"/>
+    <line x1="400" y1="100" x2="400" y2="300"/>
+    <line x1="400" y1="300" x2="600" y2="300"/>
+    <line x1="600" y1="300" x2="600" y2="150"/>
+    <line x1="600" y1="150" x2="900" y2="150"/>
+    <line x1="900" y1="150" x2="900" y2="400"/>
+    <line x1="900" y1="400" x2="1200" y2="400"/>
+    <line x1="1200" y1="400" x2="1200" y2="200"/>
+    <line x1="1200" y1="200" x2="1440" y2="200"/>
+    <line x1="0" y1="600" x2="300" y2="600"/>
+    <line x1="300" y1="600" x2="300" y2="700"/>
+    <line x1="300" y1="700" x2="700" y2="700"/>
+    <line x1="700" y1="700" x2="700" y2="500"/>
+    <line x1="700" y1="500" x2="1100" y2="500"/>
+    <line x1="1100" y1="500" x2="1100" y2="650"/>
+    <line x1="1100" y1="650" x2="1440" y2="650"/>
+    <circle cx="200" cy="100" r="4" fill="#00B4FF"/>
+    <circle cx="400" cy="100" r="4" fill="#00B4FF"/>
+    <circle cx="600" cy="150" r="4" fill="#F5A623"/>
+    <circle cx="900" cy="150" r="4" fill="#00B4FF"/>
+    <circle cx="1200" cy="200" r="4" fill="#F5A623"/>
+    <circle cx="300" cy="600" r="4" fill="#00B4FF"/>
+    <circle cx="700" cy="700" r="4" fill="#F5A623"/>
+    <circle cx="1100" cy="500" r="4" fill="#00B4FF"/>
+    <circle cx="200" cy="200" r="3" fill="none" stroke="#00B4FF"/>
+    <circle cx="400" cy="300" r="3" fill="none" stroke="#F5A623"/>
+    <circle cx="900" cy="400" r="3" fill="none" stroke="#00B4FF"/>
+  </g>
+</svg>
+
+<div class="circuit-bg"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">7</div>
+    <div class="nav-logo-text">LI<span>7</span>ERAE</div>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Recursos</a>
+    <a href="#courses">Cursos</a>
+    <a href="#solidarity">Solidariedade</a>
+    <a href="#pricing">Planos</a>
+  </div>
+  <div class="nav-cta">
+    <a class="btn-nav-ghost" href="li7erae-login.html">Entrar</a>
+    <a class="btn-nav-primary" href="li7erae-login.html">Começar grátis</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-eyebrow fade-up">Plataforma de Conhecimento</div>
+      <h1 class="hero-title fade-up delay-1">
+        <span class="line1">CONECTE,</span>
+        <span class="line2">APRENDA,</span>
+        <span class="line3">TRANSFORME.</span>
+      </h1>
+      <p class="hero-desc fade-up delay-2">
+        Cursos online, gestão de associações, comunidade e certificações — tudo integrado na plataforma que conecta quem quer aprender com quem pode ensinar.
+      </p>
+      <div class="hero-actions fade-up delay-3">
+        <a class="btn-hero-primary" href="li7erae-login.html">Começar agora →</a>
+        <a class="btn-hero-ghost" href="#courses">▷ Ver cursos</a>
+      </div>
+      <div class="hero-stats fade-up delay-4">
+        <div><div class="stat-n">12k+</div><div class="stat-l">Associados</div></div>
+        <div><div class="stat-n gold">340+</div><div class="stat-l">Cursos</div></div>
+        <div><div class="stat-n">98</div><div class="stat-l">Associações</div></div>
+      </div>
+    </div>
+    <div class="hero-visual fade-up delay-2">
+      <div class="hero-card" style="position:relative;">
+        <div class="floating-badge badge-top">🏆 Certificado emitido</div>
+        <div class="hero-card-header">
+          <div class="course-thumb">🤖</div>
+          <div>
+            <div class="course-info-title">IA para Profissionais</div>
+            <div class="course-info-sub">Módulo 3 de 8 · 47min restantes</div>
+          </div>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-label"><span>Progresso geral</span><span>68%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div>
+        </div>
+        <div class="lessons-list">
+          <div class="lesson-item done"><div class="lesson-dot"></div>Introdução às Redes Neurais</div>
+          <div class="lesson-item done"><div class="lesson-dot"></div>Modelos de Linguagem</div>
+          <div class="lesson-item active"><div class="lesson-dot"></div>Prompt Engineering ← você está aqui</div>
+          <div class="lesson-item"><div class="lesson-dot"></div>Automação com IA</div>
+          <div class="lesson-item"><div class="lesson-dot"></div>Ética e Vieses</div>
+        </div>
+        <div class="floating-badge badge-bot">⚡ 2.847 online agora</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="padding-top:0">
+  <div class="section-inner">
+    <div class="section-label reveal">O que é a Li7erae</div>
+    <h2 class="section-title reveal">Tudo que você precisa<br><span style="color:var(--blue)">em uma plataforma.</span></h2>
+    <div class="features-grid reveal">
+      <div class="feature-card">
+        <div class="feature-icon">▶</div>
+        <div class="feature-title">Cursos via YouTube</div>
+        <div class="feature-desc">Vincule aulas do YouTube diretamente à plataforma — hospedagem gratuita, controle de progresso e certificação na Li7erae.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏢</div>
+        <div class="feature-title">Gestão de Associações</div>
+        <div class="feature-desc">Controle membros, planos, pagamentos e benefícios de múltiplas associações em um único painel.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤝</div>
+        <div class="feature-title">Solidariedade</div>
+        <div class="feature-desc">Conecte quem precisa de ajuda com quem pode ajudar. Doações, mentoria e voluntariado integrados à plataforma.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎓</div>
+        <div class="feature-title">Certificados Digitais</div>
+        <div class="feature-desc">Emissão automática de certificados verificáveis com QR code ao concluir cursos.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <div class="feature-title">Comunidade</div>
+        <div class="feature-desc">Fóruns por curso, canais de área e eventos ao vivo para networking entre associados.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Dashboards Completos</div>
+        <div class="feature-desc">Relatórios de receita, engajamento e progresso para administradores, colaboradores e associados.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section id="courses" style="background:var(--dark); border-top:1px solid var(--line); border-bottom:1px solid var(--line)">
+  <div class="section-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px">
+      <div>
+        <div class="section-label reveal">Catálogo</div>
+        <h2 class="section-title reveal">Cursos em destaque</h2>
+      </div>
+      <a href="li7erae-catalogo.html" style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--blue);text-decoration:none;letter-spacing:0.1em;font-weight:600" class="reveal">Ver todos os cursos →</a>
+    </div>
+    <div class="courses-grid">
+      <div class="course-card reveal">
+        <div class="course-card-thumb">🤖
+          <div class="course-badge-wrap"><div class="badge badge-gold">Popular</div></div>
+        </div>
+        <div class="course-card-body">
+          <div class="course-card-category">Tecnologia</div>
+          <div class="course-card-title">Inteligência Artificial Aplicada</div>
+          <div class="course-rating">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            <span style="font-size:11px;color:var(--text-dim);margin-left:4px">(2.341)</span>
+          </div>
+          <div class="course-card-meta">
+            <div class="course-instructor">por Prof. Silva · 32h</div>
+            <div class="course-price">R$ 197</div>
+          </div>
+        </div>
+      </div>
+      <div class="course-card reveal delay-1">
+        <div class="course-card-thumb">⚖️
+          <div class="course-badge-wrap"><div class="badge badge-blue">Novo</div></div>
+        </div>
+        <div class="course-card-body">
+          <div class="course-card-category">Direito</div>
+          <div class="course-card-title">Direito Digital e LGPD</div>
+          <div class="course-rating">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:var(--text-dim)">★</span>
+            <span style="font-size:11px;color:var(--text-dim);margin-left:4px">(893)</span>
+          </div>
+          <div class="course-card-meta">
+            <div class="course-instructor">por Dra. Costa · 18h</div>
+            <div class="course-price">R$ 149</div>
+          </div>
+        </div>
+      </div>
+      <div class="course-card reveal delay-2">
+        <div class="course-card-thumb">🌱
+          <div class="course-badge-wrap"><div class="badge badge-blue" style="background:var(--blue);color:var(--black)">Grátis</div></div>
+        </div>
+        <div class="course-card-body">
+          <div class="course-card-category">Empreendedorismo</div>
+          <div class="course-card-title">Startups do Zero ao Primeiro Cliente</div>
+          <div class="course-rating">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            <span style="font-size:11px;color:var(--text-dim);margin-left:4px">(4.102)</span>
+          </div>
+          <div class="course-card-meta">
+            <div class="course-instructor">por Ana Lima · 12h</div>
+            <div class="course-price free">Gratuito</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLIDARITY -->
+<section id="solidarity">
+  <div class="section-inner solidarity-grid">
+    <div>
+      <div class="section-label reveal">Solidariedade</div>
+      <h2 class="section-title reveal">Conectando<br><span style="color:var(--gold)">quem ajuda</span><br>com quem precisa.</h2>
+      <p class="section-desc reveal" style="margin-top:20px">
+        A Li7erae vai além do ensino. Nossa rede de solidariedade conecta pessoas que precisam de apoio com voluntários, mentores e doadores dispostos a transformar vidas.
+      </p>
+      <div style="display:flex;gap:32px;margin-top:40px" class="reveal">
+        <div><div class="sol-counter">1.2k</div><div style="font-size:11px;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px">Pedidos atendidos</div></div>
+        <div><div class="sol-counter" style="color:var(--blue)">340</div><div style="font-size:11px;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px">Voluntários ativos</div></div>
+      </div>
+      <div style="margin-top:32px;display:flex;gap:12px" class="reveal">
+        <a href="li7erae-colaborador-comunidade.html#solidarity" class="btn-hero-primary" style="clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);padding:14px 32px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:var(--black);transition:all 0.3s;box-shadow:0 0 30px rgba(245,166,35,0.4)">Quero ajudar</a>
+        <a href="li7erae-colaborador-comunidade.html#solidarity" style="padding:13px 28px;border:1px solid var(--line);color:var(--text-mid);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;transition:all 0.2s">Preciso de ajuda</a>
+      </div>
+    </div>
+    <div class="solidarity-visual reveal">
+      <div class="sol-card">
+        <div class="sol-card-icon">🎓</div>
+        <div class="sol-card-title">Bolsas de Estudo</div>
+        <div class="sol-card-desc">Acesso gratuito a cursos premium para quem não pode pagar.</div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-card-icon">🧑‍💼</div>
+        <div class="sol-card-title">Mentoria</div>
+        <div class="sol-card-desc">Profissionais experientes mentoram talentos em início de carreira.</div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-card-icon">💰</div>
+        <div class="sol-card-title">Doações</div>
+        <div class="sol-card-desc">Contribua financeiramente para projetos de impacto social.</div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-card-icon">🤝</div>
+        <div class="sol-card-title">Voluntariado</div>
+        <div class="sol-card-desc">Ofereça seu tempo e conhecimento a quem mais precisa.</div>
+      </div>
+      <div class="sol-card highlight">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="sol-card-icon">✨</div>
+            <div class="sol-card-title" style="color:var(--gold)">Programa de Impacto</div>
+            <div class="sol-card-desc">Cada assinatura paga financia 1 bolsa de estudos para quem não pode pagar.</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:700;color:var(--gold)">1:1</div>
+            <div style="font-size:11px;color:var(--text-dim)">Assinatura = 1 Bolsa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background:var(--dark);border-top:1px solid var(--line)">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:60px">
+      <div class="section-label reveal" style="justify-content:center">Planos</div>
+      <h2 class="section-title reveal">Escolha seu plano</h2>
+      <p class="section-desc reveal" style="margin:16px auto 0;text-align:center">Comece grátis e evolua conforme suas necessidades</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-name">Essencial</div>
+        <div class="pricing-price"><sup>R$</sup>49</div>
+        <div class="pricing-period">/mês · cobrado mensalmente</div>
+        <ul class="pricing-features">
+          <li>Acesso a 50+ cursos</li>
+          <li>Certificados básicos</li>
+          <li>Comunidade de alunos</li>
+          <li>App mobile</li>
+        </ul>
+        <button class="btn-pricing">Começar agora</button>
+      </div>
+      <div class="pricing-card featured reveal delay-1">
+        <div class="pricing-name">Profissional</div>
+        <div class="pricing-price"><sup>R$</sup>149</div>
+        <div class="pricing-period">/mês · acesso ilimitado</div>
+        <ul class="pricing-features">
+          <li class="gold-feat">Todos os cursos ilimitados</li>
+          <li class="gold-feat">Certificados verificáveis</li>
+          <li class="gold-feat">Comunidade premium</li>
+          <li class="gold-feat">Mentoria em grupo</li>
+          <li class="gold-feat">Bolsa solidária inclusa</li>
+        </ul>
+        <button class="btn-pricing gold">Assinar Profissional</button>
+      </div>
+      <div class="pricing-card reveal delay-2">
+        <div class="pricing-name">Associação</div>
+        <div class="pricing-price"><sup>R$</sup>499</div>
+        <div class="pricing-period">/mês · até 50 membros</div>
+        <ul class="pricing-features">
+          <li>Tudo do Profissional</li>
+          <li>Painel de gestão completo</li>
+          <li>Cursos exclusivos da associação</li>
+          <li>Financeiro integrado</li>
+          <li>API e integrações</li>
+          <li>Suporte dedicado</li>
+        </ul>
+        <button class="btn-pricing">Falar com vendas</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:60px">
+      <div class="section-label reveal" style="justify-content:center">Depoimentos</div>
+      <h2 class="section-title reveal">O que dizem nossos<br><span style="color:var(--blue)">membros.</span></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial reveal">
+        <div class="testimonial-text">"A Li7erae transformou a gestão da nossa associação. Em 3 meses, aumentamos os membros ativos em 40% e zeramos a inadimplência."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">MC</div>
+          <div><div class="testimonial-name">Maria Carvalho</div><div class="testimonial-role">Diretora · Associação Paulista de Tech</div></div>
+        </div>
+      </div>
+      <div class="testimonial reveal delay-1">
+        <div class="testimonial-text">"Já fiz 7 cursos e obtive 5 certificados. A qualidade do conteúdo e a facilidade de integrar vídeos do YouTube são incríveis."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:linear-gradient(135deg,var(--blue),var(--gold))">RF</div>
+          <div><div class="testimonial-name">Ricardo Fernandes</div><div class="testimonial-role">Desenvolvedor · Plano Profissional</div></div>
+        </div>
+      </div>
+      <div class="testimonial reveal delay-2">
+        <div class="testimonial-text">"Recebi uma bolsa pelo programa de solidariedade e consegui meu primeiro emprego na área de dados. Sou eternamente grato à comunidade."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:linear-gradient(135deg,var(--gold),#ff6b6b)">JO</div>
+          <div><div class="testimonial-name">João Oliveira</div><div class="testimonial-role">Analista de Dados · Bolsista 2024</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" style="background:var(--dark);border-top:1px solid var(--line)">
+  <div class="cta-inner">
+    <div class="section-label reveal" style="justify-content:center">Comece hoje</div>
+    <h2 class="cta-title reveal">Pronto para <span>evoluir?</span></h2>
+    <p class="cta-desc reveal">Junte-se a mais de 12 mil profissionais que já estão aprendendo, crescendo e impactando o mundo pela Li7erae.</p>
+    <div class="cta-actions reveal">
+      <a class="btn-hero-primary" href="li7erae-login.html">Criar conta grátis</a>
+      <a class="btn-hero-ghost" href="li7erae-catalogo.html">Explorar cursos</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div class="nav-logo-icon" style="width:34px;height:34px;font-size:18px">7</div>
+        <div class="footer-logo-text">LI<span>7</span>ERAE</div>
+      </div>
+      <p class="footer-about">Plataforma de cursos online, gestão de associações e rede de solidariedade. Conectando quem quer aprender com quem pode ensinar.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Plataforma</div>
+      <ul class="footer-links">
+        <li><a href="li7erae-catalogo.html">Catálogo de Cursos</a></li>
+        <li><a href="#">Associações</a></li>
+        <li><a href="#">Certificações</a></li>
+        <li><a href="#">Solidariedade</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Acesso</div>
+      <ul class="footer-links">
+        <li><a href="li7erae-login.html">Entrar</a></li>
+        <li><a href="li7erae-login.html">Criar conta</a></li>
+        <li><a href="li7erae-dashboard-admin.html">Admin</a></li>
+        <li><a href="li7erae-colaborador-comunidade.html">Colaborador</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Empresa</div>
+      <ul class="footer-links">
+        <li><a href="#">Sobre</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Termos de Uso</a></li>
+        <li><a href="#">Privacidade</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Li7erae. Todos os direitos reservados.</p>
+    <div class="footer-socials">
+      <a class="social-link" href="#">in</a>
+      <a class="social-link" href="#">ig</a>
+      <a class="social-link" href="#">yt</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Scroll nav
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+// Animate stats counter
+function animateCount(el, target, suffix='') {
+  let start = 0;
+  const step = target / 60;
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) { start = target; clearInterval(timer); }
+    el.textContent = Math.floor(start) + suffix;
+  }, 25);
+}
+const statsObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.stat-n').forEach(el => {
+        const text = el.textContent;
+        const num = parseInt(text.replace(/\D/g,''));
+        const suffix = text.includes('k') ? 'k+' : text.includes('+') ? '+' : '';
+        animateCount(el, num, suffix);
+      });
+      statsObs.disconnect();
+    }
+  });
+}, { threshold: 0.5 });
+const heroStats = document.querySelector('.hero-stats');
+if (heroStats) statsObs.observe(heroStats);
+</script>
+</body>
+</html>

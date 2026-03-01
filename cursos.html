@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Li7erae — Gestão de Cursos</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#00B4FF;--blue-dim:rgba(0,180,255,0.12);--blue-glow:rgba(0,180,255,0.28);
+  --gold:#F5A623;--gold-bright:#FFB940;--gold-dim:rgba(245,166,35,0.14);--gold-glow:rgba(245,166,35,0.4);
+  --green:#00E676;--green-dim:rgba(0,230,118,0.1);--red:#FF5252;--red-dim:rgba(255,82,82,0.1);
+  --purple:#BB86FC;
+  --black:#050810;--dark:#080D18;--dark2:#0D1525;--dark3:#121D30;--dark4:#162038;
+  --text:#E8F4FF;--text-mid:#8AADCC;--text-dim:#3D5570;
+  --line:rgba(0,180,255,0.1);--line-gold:rgba(245,166,35,0.18);
+  --gold-line:rgba(245,166,35,0.18);--gold-light:#FFB940;
+  --sidebar-w:240px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{overflow:hidden;}
+body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;font-weight:300;display:flex;height:100vh;overflow:hidden;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:#333;border-radius:2px;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--dark);border-right:1px solid var(--gold-line);display:flex;flex-direction:column;height:100vh;overflow-y:auto;}
+.sidebar-logo{padding:26px 22px 22px;border-bottom:1px solid rgba(201,169,110,0.08);}
+.logo-text{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:500;letter-spacing:0.06em;color:var(--text);text-decoration:none;}
+.logo-text span{color:var(--gold);}
+.logo-sub{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-dim);margin-top:4px;}
+.sidebar-section{padding:18px 14px 6px;}
+.sidebar-section-label{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim);font-weight:500;padding:0 8px;margin-bottom:5px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;color:var(--text-dim);font-size:13px;font-weight:400;cursor:pointer;transition:all 0.2s;position:relative;text-decoration:none;margin-bottom:2px;}
+.nav-item:hover{color:var(--text-mid);background:rgba(255,255,255,0.03);}
+.nav-item.active{color:var(--gold);background:rgba(201,169,110,0.07);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;background:var(--gold);}
+.nav-icon{width:18px;text-align:center;font-size:14px;}
+.sidebar-spacer{flex:1;}
+.sidebar-user{padding:14px;border-top:1px solid rgba(201,169,110,0.08);display:flex;align-items:center;gap:10px;}
+.user-avatar{width:34px;height:34px;background:linear-gradient(135deg,#8B6A35,var(--gold));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--black);flex-shrink:0;}
+.user-name{font-size:12px;font-weight:500;color:var(--text);}
+.user-role{font-size:10px;color:var(--text-dim);}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.view{display:none;flex:1;flex-direction:column;height:100%;overflow:hidden;}
+.view.active{display:flex;}
+
+/* TOPBAR */
+.topbar{height:60px;border-bottom:1px solid var(--gold-line);display:flex;align-items:center;padding:0 28px;gap:14px;flex-shrink:0;background:var(--dark);}
+.topbar-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:400;}
+.topbar-sub{font-size:11px;color:var(--text-dim);margin-top:2px;}
+.topbar-spacer{flex:1;}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--dark2);border:1px solid rgba(201,169,110,0.12);padding:7px 14px;width:200px;}
+.search-box input{background:none;border:none;outline:none;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;width:100%;}
+.search-box input::placeholder{color:var(--text-dim);}
+.btn-new{padding:9px 22px;background:var(--gold);color:var(--black);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.25s;display:flex;align-items:center;gap:8px;}
+.btn-new:hover{background:var(--gold-light);}
+.filter-tabs{display:flex;gap:0;border:1px solid rgba(201,169,110,0.12);}
+.filter-tab{padding:7px 16px;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;transition:all 0.2s;border-right:1px solid rgba(201,169,110,0.1);background:none;}
+.filter-tab:last-child{border-right:none;}
+.filter-tab.active,.filter-tab:hover{background:var(--gold-dim);color:var(--gold);}
+
+/* ── LIST VIEW ── */
+.list-content{flex:1;overflow-y:auto;padding:24px 28px;}
+.courses-table-card{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);}
+.ct-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 100px 80px;gap:0;padding:12px 20px;border-bottom:1px solid rgba(201,169,110,0.08);}
+.ct-head{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);font-weight:500;}
+.ct-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 100px 80px;gap:0;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background 0.15s;align-items:center;}
+.ct-row:last-child{border-bottom:none;}
+.ct-row:hover{background:rgba(255,255,255,0.025);}
+.ct-course{display:flex;align-items:center;gap:14px;}
+.ct-thumb{width:44px;height:44px;background:var(--dark3);border:1px solid var(--gold-line);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ct-name{font-size:13px;font-weight:500;color:var(--text);}
+.ct-cat{font-size:11px;color:var(--text-dim);margin-top:2px;}
+.ct-cell{font-size:13px;color:var(--text-mid);}
+.ct-cell.gold{color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:400;}
+.status-pill{display:inline-block;padding:3px 10px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;}
+.status-pill.pub{background:rgba(76,175,125,0.12);color:var(--green);}
+.status-pill.rascunho{background:rgba(201,169,110,0.12);color:var(--gold);}
+.status-pill.rev{background:rgba(91,141,217,0.12);color:var(--blue);}
+.ct-actions{display:flex;gap:6px;justify-content:flex-end;}
+.act-btn{width:28px;height:28px;border:1px solid rgba(201,169,110,0.15);background:none;color:var(--text-dim);font-size:12px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+.act-btn:hover{border-color:rgba(201,169,110,0.5);color:var(--gold);}
+.act-btn.edit:hover{color:var(--blue);border-color:rgba(91,141,217,0.5);}
+.act-btn.del:hover{color:var(--red);border-color:rgba(224,85,85,0.4);}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat-mini{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);padding:20px;display:flex;align-items:center;gap:16px;}
+.stat-mini-icon{font-size:24px;opacity:0.7;}
+.stat-mini-n{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:300;color:var(--gold);display:block;line-height:1;}
+.stat-mini-l{font-size:10px;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;}
+
+/* ── EDITOR VIEW ── */
+.editor-wrap{flex:1;display:flex;overflow:hidden;}
+.editor-form{flex:1;overflow-y:auto;padding:28px;}
+.editor-sidebar{width:300px;min-width:300px;background:var(--dark);border-left:1px solid var(--gold-line);overflow-y:auto;padding:24px;}
+.form-section{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);padding:24px;margin-bottom:16px;}
+.form-section-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:500;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid rgba(201,169,110,0.1);}
+.field{margin-bottom:18px;}
+.field:last-child{margin-bottom:0;}
+.field-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);font-weight:500;display:block;margin-bottom:8px;}
+.field-input{width:100%;background:var(--dark3);border:1px solid rgba(201,169,110,0.12);color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:300;padding:11px 14px;outline:none;transition:border-color 0.2s;}
+.field-input:focus{border-color:rgba(201,169,110,0.45);}
+.field-input::placeholder{color:var(--text-dim);}
+.field-textarea{resize:vertical;min-height:100px;line-height:1.7;}
+.field-select{appearance:none;cursor:pointer;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+
+/* Modules builder */
+.module-builder{margin-bottom:16px;}
+.module-item{background:var(--dark3);border:1px solid rgba(201,169,110,0.1);margin-bottom:10px;}
+.module-top{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;transition:background 0.2s;}
+.module-top:hover{background:rgba(255,255,255,0.02);}
+.module-drag{color:var(--text-dim);cursor:grab;font-size:14px;}
+.module-num{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:300;color:var(--gold);width:24px;text-align:center;}
+.module-title-input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:500;}
+.module-count-badge{font-size:10px;color:var(--text-dim);margin-right:8px;}
+.module-actions{display:flex;gap:6px;}
+.m-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:12px;transition:color 0.2s;padding:2px 6px;}
+.m-btn:hover{color:var(--gold);}
+.lessons-list{padding:0 16px 12px 44px;}
+.lesson-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.lesson-row:last-child{border-bottom:none;}
+.lesson-type-icon{font-size:13px;color:var(--text-dim);width:18px;text-align:center;}
+.lesson-name-input{flex:1;background:none;border:none;outline:none;color:var(--text-mid);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:300;}
+.lesson-name-input:focus{color:var(--text);}
+.lesson-dur{font-size:11px;color:var(--text-dim);width:50px;text-align:right;}
+.lesson-del{background:none;border:none;color:var(--text-dim);cursor:pointer;opacity:0;transition:all 0.2s;font-size:12px;}
+.lesson-row:hover .lesson-del{opacity:1;}
+.lesson-row:hover .lesson-del:hover{color:var(--red);}
+.add-lesson-btn{display:flex;align-items:center;gap:8px;padding:8px 0;font-size:11px;color:var(--text-dim);cursor:pointer;background:none;border:none;font-family:'Exo 2',sans-serif;margin-top:6px;transition:color 0.2s;}
+.add-lesson-btn:hover{color:var(--gold);}
+.add-module-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;border:1px dashed rgba(201,169,110,0.2);background:none;color:var(--text-dim);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.add-module-btn:hover{border-color:rgba(201,169,110,0.5);color:var(--gold);}
+
+/* Editor Sidebar */
+.es-section{margin-bottom:24px;}
+.es-title{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:12px;}
+.es-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text-mid);padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.es-row:last-child{border-bottom:none;}
+.es-val{color:var(--text);font-weight:500;}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.toggle-label{font-size:13px;color:var(--text-mid);}
+.toggle{width:36px;height:20px;background:rgba(255,255,255,0.1);border-radius:10px;position:relative;cursor:pointer;transition:background 0.3s;}
+.toggle.on{background:rgba(201,169,110,0.4);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;background:var(--text-dim);border-radius:50%;transition:all 0.3s;}
+.toggle.on::after{left:19px;background:var(--gold);}
+.cover-upload{border:1px dashed rgba(201,169,110,0.2);background:var(--dark3);height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all 0.2s;margin-bottom:12px;}
+.cover-upload:hover{border-color:rgba(201,169,110,0.5);background:rgba(201,169,110,0.03);}
+.cover-upload-icon{font-size:24px;color:var(--text-dim);}
+.cover-upload-label{font-size:11px;color:var(--text-dim);text-align:center;line-height:1.5;}
+.btn-save{width:100%;padding:13px;background:var(--gold);color:var(--black);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.3s;margin-bottom:10px;}
+.btn-save:hover{background:var(--gold-light);}
+.btn-preview{width:100%;padding:12px;background:none;border:1px solid rgba(201,169,110,0.3);color:var(--gold);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
+.btn-preview:hover{background:var(--gold-dim);}
+
+/* ANIM */
+.fade-in{animation:fadeIn 0.45s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a class="logo-wrap" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none"><div style="width:32px;height:32px;background:#F5A623;display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-weight:700;font-size:16px;color:#000;clip-path:polygon(5px 0%,calc(100% - 5px) 0%,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0% calc(100% - 5px),0% 5px);box-shadow:0 0 12px rgba(245,166,35,0.4)">7</div><span style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;letter-spacing:0.1em;color:#E8F4FF">LI<span style=color:#F5A623>7</span>ERAE</span></a>
+    <div class="logo-sub">Gestão de Cursos</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Principal</div>
+    <a class="nav-item" href="#">⬡ Visão Geral</a>
+    <a class="nav-item" href="#">📊 Analytics</a>
+    <a class="nav-item" href="#">💰 Financeiro</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Conteúdo</div>
+    <a class="nav-item active" href="#"><span class="nav-icon">🎓</span> Cursos</a>
+    <a class="nav-item" href="#"><span class="nav-icon">📁</span> Biblioteca de Mídia</a>
+    <a class="nav-item" href="#"><span class="nav-icon">📋</span> Quizzes & Avaliações</a>
+    <a class="nav-item" href="#"><span class="nav-icon">📜</span> Certificados</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Gestão</div>
+    <a class="nav-item" href="#"><span class="nav-icon">👥</span> Alunos</a>
+    <a class="nav-item" href="#"><span class="nav-icon">✍️</span> Colaboradores</a>
+    <a class="nav-item" href="#"><span class="nav-icon">⚙️</span> Configurações</a>
+  </div>
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-user">
+    <div class="user-avatar">CA</div>
+    <div>
+      <div class="user-name">Carlos Alves</div>
+      <div class="user-role">Administrador</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ── LIST VIEW ── -->
+  <div class="view active" id="view-list">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Gestão de Cursos</div>
+        <div class="topbar-sub">340 cursos cadastrados</div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="filter-tabs">
+        <div class="filter-tab active">Todos</div>
+        <div class="filter-tab">Publicados</div>
+        <div class="filter-tab">Rascunhos</div>
+        <div class="filter-tab">Em revisão</div>
+      </div>
+      <div class="search-box">
+        <span style="color:var(--text-dim);font-size:13px;">🔍</span>
+        <input type="text" placeholder="Buscar curso...">
+      </div>
+      <button class="btn-new" onclick="switchToEditor()">＋ Novo Curso</button>
+    </div>
+    <div class="list-content">
+      <!-- Stats -->
+      <div class="stat-row fade-in">
+        <div class="stat-mini">
+          <div class="stat-mini-icon">🎓</div>
+          <div>
+            <span class="stat-mini-n">340</span>
+            <span class="stat-mini-l">Cursos ativos</span>
+          </div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-icon">👤</div>
+          <div>
+            <span class="stat-mini-n">6.2k</span>
+            <span class="stat-mini-l">Matrículas/mês</span>
+          </div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-icon">💰</div>
+          <div>
+            <span class="stat-mini-n">R$ 84k</span>
+            <span class="stat-mini-l">Receita/mês</span>
+          </div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-icon">⭐</div>
+          <div>
+            <span class="stat-mini-n">4.8</span>
+            <span class="stat-mini-l">Avaliação média</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="courses-table-card fade-in">
+        <div class="ct-header">
+          <div class="ct-head">Curso</div>
+          <div class="ct-head">Categoria</div>
+          <div class="ct-head">Matrículas</div>
+          <div class="ct-head">Receita</div>
+          <div class="ct-head">Status</div>
+          <div class="ct-head" style="text-align:right">Ações</div>
+        </div>
+        <div class="ct-row" onclick="switchToEditor()">
+          <div class="ct-course">
+            <div class="ct-thumb">⚖️</div>
+            <div><div class="ct-name">Compliance & Governança para Associações</div><div class="ct-cat">14 módulos · 6h 20min</div></div>
+          </div>
+          <div class="ct-cell">Direito</div>
+          <div class="ct-cell">1.840</div>
+          <div class="ct-cell gold">R$ 54.720</div>
+          <div class="ct-cell"><span class="status-pill pub">Publicado</span></div>
+          <div class="ct-actions"><button class="act-btn edit" onclick="switchToEditor(event)">✏</button><button class="act-btn" onclick="event.stopPropagation()">📊</button><button class="act-btn del" onclick="event.stopPropagation()">🗑</button></div>
+        </div>
+        <div class="ct-row" onclick="switchToEditor()">
+          <div class="ct-course">
+            <div class="ct-thumb">📈</div>
+            <div><div class="ct-name">Planejamento Estratégico para Líderes</div><div class="ct-cat">18 módulos · 11h 00min</div></div>
+          </div>
+          <div class="ct-cell">Gestão</div>
+          <div class="ct-cell">1.280</div>
+          <div class="ct-cell gold">R$ 63.680</div>
+          <div class="ct-cell"><span class="status-pill pub">Publicado</span></div>
+          <div class="ct-actions"><button class="act-btn edit" onclick="switchToEditor(event)">✏</button><button class="act-btn" onclick="event.stopPropagation()">📊</button><button class="act-btn del" onclick="event.stopPropagation()">🗑</button></div>
+        </div>
+        <div class="ct-row" onclick="switchToEditor()">
+          <div class="ct-course">
+            <div class="ct-thumb">🎙️</div>
+            <div><div class="ct-name">Oratória e Persuasão Profissional</div><div class="ct-cat">8 módulos · 4h 45min</div></div>
+          </div>
+          <div class="ct-cell">Comunicação</div>
+          <div class="ct-cell">2.140</div>
+          <div class="ct-cell gold">R$ 42.140</div>
+          <div class="ct-cell"><span class="status-pill pub">Publicado</span></div>
+          <div class="ct-actions"><button class="act-btn edit" onclick="switchToEditor(event)">✏</button><button class="act-btn" onclick="event.stopPropagation()">📊</button><button class="act-btn del" onclick="event.stopPropagation()">🗑</button></div>
+        </div>
+        <div class="ct-row" onclick="switchToEditor()">
+          <div class="ct-course">
+            <div class="ct-thumb">🌐</div>
+            <div><div class="ct-name">Direito Digital & LGPD</div><div class="ct-cat">10 módulos · 5h 30min</div></div>
+          </div>
+          <div class="ct-cell">Direito</div>
+          <div class="ct-cell">980</div>
+          <div class="ct-cell gold">R$ 29.400</div>
+          <div class="ct-cell"><span class="status-pill rev">Em revisão</span></div>
+          <div class="ct-actions"><button class="act-btn edit" onclick="switchToEditor(event)">✏</button><button class="act-btn" onclick="event.stopPropagation()">📊</button><button class="act-btn del" onclick="event.stopPropagation()">🗑</button></div>
+        </div>
+        <div class="ct-row" onclick="switchToEditor()">
+          <div class="ct-course">
+            <div class="ct-thumb">💼</div>
+            <div><div class="ct-name">Liderança e Gestão de Times</div><div class="ct-cat">Rascunho — 6 módulos</div></div>
+          </div>
+          <div class="ct-cell">Gestão</div>
+          <div class="ct-cell">—</div>
+          <div class="ct-cell gold">—</div>
+          <div class="ct-cell"><span class="status-pill rascunho">Rascunho</span></div>
+          <div class="ct-actions"><button class="act-btn edit" onclick="switchToEditor(event)">✏</button><button class="act-btn" onclick="event.stopPropagation()">📊</button><button class="act-btn del" onclick="event.stopPropagation()">🗑</button></div>
+        </div>
+        <div class="ct-row" onclick="switchToEditor()">
+          <div class="ct-course">
+            <div class="ct-thumb">📐</div>
+            <div><div class="ct-name">Gestão de Projetos com Agilidade</div><div class="ct-cat">12 módulos · 7h 15min</div></div>
+          </div>
+          <div class="ct-cell">Metodologia</div>
+          <div class="ct-cell">760</div>
+          <div class="ct-cell gold">R$ 22.800</div>
+          <div class="ct-cell"><span class="status-pill pub">Publicado</span></div>
+          <div class="ct-actions"><button class="act-btn edit" onclick="switchToEditor(event)">✏</button><button class="act-btn" onclick="event.stopPropagation()">📊</button><button class="act-btn del" onclick="event.stopPropagation()">🗑</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EDITOR VIEW ── -->
+  <div class="view" id="view-editor">
+    <div class="topbar">
+      <button onclick="switchToList()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;">← Voltar</button>
+      <div style="margin-left:12px;">
+        <div class="topbar-title">Editar Curso</div>
+        <div class="topbar-sub">Compliance & Governança para Associações</div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <span style="font-size:11px;color:var(--text-dim);margin-right:16px;">💾 Salvo às 14:32</span>
+      <button class="btn-new" style="font-size:11px;padding:8px 20px;">Publicar</button>
+    </div>
+    <div class="editor-wrap fade-in">
+      <!-- FORM -->
+      <div class="editor-form">
+
+        <div class="form-section">
+          <div class="form-section-title">Informações Básicas</div>
+          <div class="field">
+            <label class="field-label">Título do curso</label>
+            <input class="field-input" type="text" value="Compliance & Governança para Associações">
+          </div>
+          <div class="field">
+            <label class="field-label">Descrição curta</label>
+            <textarea class="field-input field-textarea" placeholder="Descreva o curso em até 160 caracteres...">Aprenda a implementar estruturas sólidas de compliance e governança em associações, com base na legislação vigente e boas práticas internacionais.</textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">Descrição completa</label>
+            <textarea class="field-input field-textarea" style="min-height:140px;" placeholder="Descreva detalhadamente o conteúdo, objetivos e público-alvo...">Este curso abrange desde os fundamentos do compliance até a implementação prática em associações de diferentes portes. Você aprenderá a estruturar canais de denúncia, elaborar políticas internas, gerenciar riscos e garantir conformidade regulatória.</textarea>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label">Categoria</label>
+              <select class="field-input field-select">
+                <option selected>Direito</option>
+                <option>Gestão</option>
+                <option>Comunicação</option>
+                <option>Metodologia</option>
+                <option>Finanças</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Nível</label>
+              <select class="field-input field-select">
+                <option>Iniciante</option>
+                <option selected>Intermediário</option>
+                <option>Avançado</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row-3">
+            <div class="field">
+              <label class="field-label">Preço (R$)</label>
+              <input class="field-input" type="number" value="297">
+            </div>
+            <div class="field">
+              <label class="field-label">Preço Associado</label>
+              <input class="field-input" type="number" value="197">
+            </div>
+            <div class="field">
+              <label class="field-label">Carga horária</label>
+              <input class="field-input" type="text" value="6h 20min">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Módulos & Aulas</div>
+          <div class="module-builder" id="moduleBuilder">
+
+            <div class="module-item">
+              <div class="module-top">
+                <span class="module-drag">⠿</span>
+                <span class="module-num">1</span>
+                <input class="module-title-input" value="Fundamentos do Compliance">
+                <span class="module-count-badge">4 aulas</span>
+                <div class="module-actions">
+                  <button class="m-btn">＋</button>
+                  <button class="m-btn">🗑</button>
+                  <button class="m-btn">▾</button>
+                </div>
+              </div>
+              <div class="lessons-list">
+                <div class="lesson-row">
+                  <span class="lesson-type-icon">▶</span>
+                  <input class="lesson-name-input" value="Introdução ao Compliance">
+                  <span class="lesson-dur">12 min</span>
+                  <button class="lesson-del">✕</button>
+                </div>
+                <div class="lesson-row">
+                  <span class="lesson-type-icon">▶</span>
+                  <input class="lesson-name-input" value="Conceitos e Legislação Base">
+                  <span class="lesson-dur">22 min</span>
+                  <button class="lesson-del">✕</button>
+                </div>
+                <div class="lesson-row">
+                  <span class="lesson-type-icon">▶</span>
+                  <input class="lesson-name-input" value="Órgãos Reguladores">
+                  <span class="lesson-dur">18 min</span>
+                  <button class="lesson-del">✕</button>
+                </div>
+                <div class="lesson-row">
+                  <span class="lesson-type-icon">📋</span>
+                  <input class="lesson-name-input" value="Quiz — Módulo 1">
+                  <span class="lesson-dur">10 min</span>
+                  <button class="lesson-del">✕</button>
+                </div>
+                <button class="add-lesson-btn">＋ Adicionar aula</button>
+              </div>
+            </div>
+
+            <div class="module-item">
+              <div class="module-top">
+                <span class="module-drag">⠿</span>
+                <span class="module-num">2</span>
+                <input class="module-title-input" value="Estruturas de Governança">
+                <span class="module-count-badge">4 aulas</span>
+                <div class="module-actions">
+                  <button class="m-btn">＋</button>
+                  <button class="m-btn">🗑</button>
+                  <button class="m-btn">▾</button>
+                </div>
+              </div>
+              <div class="lessons-list">
+                <div class="lesson-row">
+                  <span class="lesson-type-icon">▶</span>
+                  <input class="lesson-name-input" value="Conselho Fiscal e Diretoria">
+                  <span class="lesson-dur">20 min</span>
+                  <button class="lesson-del">✕</button>
+                </div>
+                <div class="lesson-row">
+                  <span class="lesson-type-icon">📄</span>
+                  <input class="lesson-name-input" value="Estatutos e Regimentos">
+                  <span class="lesson-dur">16 min</span>
+                  <button class="lesson-del">✕</button>
+                </div>
+                <button class="add-lesson-btn">＋ Adicionar aula</button>
+              </div>
+            </div>
+
+            <div class="module-item">
+              <div class="module-top">
+                <span class="module-drag">⠿</span>
+                <span class="module-num">3</span>
+                <input class="module-title-input" value="Implementação Prática">
+                <span class="module-count-badge">4 aulas</span>
+                <div class="module-actions">
+                  <button class="m-btn">＋</button>
+                  <button class="m-btn">🗑</button>
+                  <button class="m-btn">▾</button>
+                </div>
+              </div>
+              <div class="lessons-list">
+                <div class="lesson-row">
+                  <span class="lesson-type-icon">▶</span>
+                  <input class="lesson-name-input" value="Mapeamento de Riscos">
+                  <span class="lesson-dur">24 min</span>
+                  <button class="lesson-del">✕</button>
+                </div>
+                <div class="lesson-row">
+                  <span class="lesson-type-icon">▶</span>
+                  <input class="lesson-name-input" value="Estruturas de Compliance nas Associações">
+                  <span class="lesson-dur">18 min</span>
+                  <button class="lesson-del">✕</button>
+                </div>
+                <button class="add-lesson-btn">＋ Adicionar aula</button>
+              </div>
+            </div>
+
+          </div>
+          <button class="add-module-btn" onclick="addModule()">⊕ Adicionar Módulo</button>
+        </div>
+
+      </div>
+
+      <!-- EDITOR SIDEBAR -->
+      <div class="editor-sidebar">
+
+        <div class="cover-upload">
+          <div class="cover-upload-icon">🖼</div>
+          <div class="cover-upload-label">Clique para enviar<br>capa do curso<br><span style="color:var(--gold);font-size:10px;">1280×720px recomendado</span></div>
+        </div>
+
+        <button class="btn-save">💾 Salvar rascunho</button>
+        <button class="btn-preview">👁 Pré-visualizar</button>
+
+        <div style="height:16px;"></div>
+
+        <div class="es-section">
+          <div class="es-title">Status & Visibilidade</div>
+          <div class="toggle-row">
+            <span class="toggle-label">Publicado</span>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Exclusivo para associados</span>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Certificado automático</span>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Permitir avaliações</span>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+
+        <div class="es-section">
+          <div class="es-title">Estatísticas</div>
+          <div class="es-row"><span>Matrículas</span><span class="es-val">1.840</span></div>
+          <div class="es-row"><span>Concluídos</span><span class="es-val">648</span></div>
+          <div class="es-row"><span>Taxa de conclusão</span><span class="es-val">35%</span></div>
+          <div class="es-row"><span>Avaliação</span><span class="es-val">⭐ 4.9</span></div>
+          <div class="es-row"><span>Receita total</span><span class="es-val" style="color:var(--gold)">R$ 54.720</span></div>
+        </div>
+
+        <div class="es-section">
+          <div class="es-title">Instrutor</div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+            <div style="width:32px;height:32px;background:linear-gradient(135deg,#2C3E7A,#5B8DD9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;">HM</div>
+            <div>
+              <div style="font-size:13px;color:var(--text);font-weight:500;">Prof. Hélio Matos</div>
+              <div style="font-size:11px;color:var(--text-dim);">Direito · 24 cursos</div>
+            </div>
+          </div>
+          <button style="width:100%;margin-top:10px;padding:8px;border:1px solid rgba(201,169,110,0.2);background:none;color:var(--text-dim);font-family:'Exo 2',sans-serif;font-size:11px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,169,110,0.5)'" onmouseout="this.style.borderColor='rgba(201,169,110,0.2)'">Trocar instrutor</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+function switchToEditor(e) {
+  if(e) e.stopPropagation();
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-editor').classList.add('active');
+}
+function switchToList() {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-list').classList.add('active');
+}
+document.querySelectorAll('.filter-tab').forEach(t => {
+  t.addEventListener('click', function() {
+    document.querySelectorAll('.filter-tab').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+let moduleCount = 4;
+function addModule() {
+  const builder = document.getElementById('moduleBuilder');
+  const m = document.createElement('div');
+  m.className = 'module-item';
+  m.innerHTML = `
+    <div class="module-top">
+      <span class="module-drag">⠿</span>
+      <span class="module-num">${moduleCount}</span>
+      <input class="module-title-input" placeholder="Nome do módulo...">
+      <span class="module-count-badge">0 aulas</span>
+      <div class="module-actions">
+        <button class="m-btn">＋</button>
+        <button class="m-btn" onclick="this.closest('.module-item').remove()">🗑</button>
+        <button class="m-btn">▾</button>
+      </div>
+    </div>
+    <div class="lessons-list">
+      <button class="add-lesson-btn">＋ Adicionar aula</button>
+    </div>`;
+  builder.appendChild(m);
+  moduleCount++;
+  m.scrollIntoView({behavior:'smooth'});
+}
+// Auto-save indicator
+setInterval(() => {
+  const el = document.querySelector('#view-editor .topbar span');
+  if(el) {
+    const now = new Date();
+    el.textContent = `💾 Salvo às ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  }
+}, 30000);
+</script>
+</body>
+</html>

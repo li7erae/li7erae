@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Li7erae — Colaborador & Comunidade</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#00B4FF;--blue-dim:rgba(0,180,255,0.12);--blue-glow:rgba(0,180,255,0.28);
+  --gold:#F5A623;--gold-bright:#FFB940;--gold-dim:rgba(245,166,35,0.14);--gold-glow:rgba(245,166,35,0.4);
+  --green:#00E676;--green-dim:rgba(0,230,118,0.1);--red:#FF5252;--red-dim:rgba(255,82,82,0.1);
+  --purple:#BB86FC;
+  --black:#050810;--dark:#080D18;--dark2:#0D1525;--dark3:#121D30;--dark4:#162038;
+  --text:#E8F4FF;--text-mid:#8AADCC;--text-dim:#3D5570;
+  --line:rgba(0,180,255,0.1);--line-gold:rgba(245,166,35,0.18);
+  --gold-line:rgba(245,166,35,0.18);--gold-light:#FFB940;
+  --sidebar-w:240px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{overflow:hidden;}
+body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;font-weight:300;display:flex;height:100vh;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#333;border-radius:2px;}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--dark);border-right:1px solid var(--gold-line);display:flex;flex-direction:column;height:100vh;overflow-y:auto;}
+.sidebar-logo{padding:26px 22px 22px;border-bottom:1px solid rgba(201,169,110,0.08);}
+.logo-text{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:500;letter-spacing:0.06em;color:var(--text);text-decoration:none;}
+.logo-text span{color:var(--gold);}
+.logo-sub{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-dim);margin-top:4px;}
+.sidebar-section{padding:18px 14px 6px;}
+.sidebar-section-label{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim);font-weight:500;padding:0 8px;margin-bottom:5px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;color:var(--text-dim);font-size:13px;font-weight:400;cursor:pointer;transition:all 0.2s;position:relative;text-decoration:none;margin-bottom:2px;}
+.nav-item:hover{color:var(--text-mid);background:rgba(255,255,255,0.03);}
+.nav-item.active{color:var(--gold);background:rgba(201,169,110,0.07);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;background:var(--gold);}
+.nav-icon{width:18px;text-align:center;font-size:14px;}
+.nav-badge{margin-left:auto;background:var(--gold);color:var(--black);font-size:9px;font-weight:700;padding:2px 7px;}
+.sidebar-spacer{flex:1;}
+.sidebar-user{padding:14px;border-top:1px solid rgba(201,169,110,0.08);display:flex;align-items:center;gap:10px;}
+.user-avatar{width:34px;height:34px;background:linear-gradient(135deg,#2C3E7A,var(--blue));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;}
+.user-name{font-size:12px;font-weight:500;}
+.user-role{font-size:10px;color:var(--text-dim);}
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.view{display:none;flex:1;flex-direction:column;overflow:hidden;}
+.view.active{display:flex;}
+.topbar{height:60px;border-bottom:1px solid var(--gold-line);display:flex;align-items:center;padding:0 28px;gap:14px;flex-shrink:0;background:var(--dark);}
+.topbar-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:400;}
+.topbar-sub{font-size:11px;color:var(--text-dim);margin-top:2px;}
+.topbar-spacer{flex:1;}
+.btn-new{padding:9px 22px;background:var(--gold);color:var(--black);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.25s;}
+.btn-new:hover{background:#E8D5A3;}
+
+/* ── COLABORADOR ── */
+.collab-content{flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:20px;}
+.collab-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.collab-kpi{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);padding:20px;transition:border-color 0.3s;}
+.collab-kpi:hover{border-color:rgba(201,169,110,0.3);}
+.ck-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);font-weight:500;margin-bottom:10px;}
+.ck-val{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:300;color:var(--text);}
+.ck-change{font-size:11px;margin-top:6px;}
+.ck-change.up{color:var(--green);}
+
+.courses-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.collab-course-card{background:var(--dark2);border:1px solid rgba(201,169,110,0.1);overflow:hidden;transition:all 0.3s;}
+.collab-course-card:hover{border-color:rgba(201,169,110,0.3);}
+.ccc-top{padding:20px;display:flex;gap:14px;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,0.04);}
+.ccc-icon{width:44px;height:44px;background:var(--dark3);border:1px solid var(--gold-line);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ccc-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.ccc-meta{font-size:11px;color:var(--text-dim);}
+.ccc-status{margin-left:auto;flex-shrink:0;}
+.status-pill{display:inline-block;padding:3px 10px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;}
+.status-pill.pub{background:rgba(76,175,125,0.12);color:var(--green);}
+.status-pill.rascunho{background:rgba(201,169,110,0.12);color:var(--gold);}
+.status-pill.rev{background:rgba(91,141,217,0.12);color:var(--blue);}
+.ccc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
+.ccc-stat{padding:14px;text-align:center;border-right:1px solid rgba(255,255,255,0.04);}
+.ccc-stat:last-child{border-right:none;}
+.ccc-stat-n{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:300;color:var(--gold);display:block;}
+.ccc-stat-l{font-size:10px;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;}
+.ccc-actions{display:flex;border-top:1px solid rgba(255,255,255,0.04);}
+.ccc-btn{flex:1;padding:12px;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;background:none;border:none;border-right:1px solid rgba(255,255,255,0.04);font-family:'Exo 2',sans-serif;transition:all 0.2s;}
+.ccc-btn:last-child{border-right:none;}
+.ccc-btn:hover{color:var(--gold);background:rgba(201,169,110,0.04);}
+
+/* ── COMUNIDADE ── */
+.community-layout{flex:1;display:flex;overflow:hidden;}
+.community-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.community-sidebar{width:280px;min-width:280px;background:var(--dark);border-left:1px solid var(--gold-line);overflow-y:auto;padding:20px;}
+.comm-search{display:flex;align-items:center;gap:8px;background:var(--dark3);border:1px solid rgba(201,169,110,0.12);padding:10px 14px;margin:0 20px 16px;}
+.comm-search input{background:none;border:none;outline:none;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;flex:1;}
+.comm-search input::placeholder{color:var(--text-dim);}
+.channels-list{flex:1;overflow-y:auto;}
+.channel-group{padding:0 20px 8px;}
+.channel-group-title{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim);font-weight:500;padding:12px 0 6px;}
+.channel-item{display:flex;align-items:center;gap:10px;padding:9px 10px;color:var(--text-dim);font-size:13px;cursor:pointer;transition:all 0.2s;border-radius:2px;}
+.channel-item:hover,.channel-item.active{color:var(--text);background:rgba(255,255,255,0.04);}
+.channel-item.active{color:var(--gold);}
+.channel-hash{font-size:15px;width:18px;text-align:center;opacity:0.6;}
+.channel-name{flex:1;}
+.channel-unread{background:var(--gold);color:var(--black);font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;}
+
+/* MESSAGES */
+.messages-area{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:0;}
+.msg-date-divider{text-align:center;margin:16px 0;position:relative;}
+.msg-date-divider::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,0.06);}
+.msg-date-text{background:var(--black);padding:0 16px;position:relative;z-index:1;font-size:11px;color:var(--text-dim);letter-spacing:0.1em;}
+.msg-group{display:flex;gap:12px;padding:6px 0;}
+.msg-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--black);flex-shrink:0;margin-top:2px;}
+.msg-content{flex:1;}
+.msg-header{display:flex;align-items:baseline;gap:10px;margin-bottom:4px;}
+.msg-author{font-size:13px;font-weight:600;color:var(--text);}
+.msg-time{font-size:10px;color:var(--text-dim);}
+.msg-badge{font-size:9px;padding:2px 8px;letter-spacing:0.1em;font-weight:600;}
+.msg-badge.instructor{background:rgba(201,169,110,0.15);color:var(--gold);}
+.msg-badge.mod{background:rgba(76,175,125,0.12);color:var(--green);}
+.msg-text{font-size:13px;color:var(--text-mid);line-height:1.65;font-weight:300;}
+.msg-text a{color:var(--gold);text-decoration:none;}
+.msg-reactions{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+.reaction{display:flex;align-items:center;gap:4px;padding:3px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);font-size:12px;cursor:pointer;transition:all 0.2s;}
+.reaction:hover,.reaction.active{background:rgba(201,169,110,0.1);border-color:rgba(201,169,110,0.3);}
+.reaction span{font-size:11px;color:var(--text-dim);}
+.msg-image{margin-top:8px;width:280px;height:160px;background:var(--dark3);border:1px solid rgba(201,169,110,0.1);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;}
+
+/* Input */
+.message-input-wrap{padding:16px 24px;border-top:1px solid rgba(201,169,110,0.08);}
+.message-input-box{background:var(--dark3);border:1px solid rgba(201,169,110,0.15);display:flex;align-items:flex-end;gap:0;transition:border-color 0.2s;}
+.message-input-box:focus-within{border-color:rgba(201,169,110,0.4);}
+.msg-input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:300;padding:14px 16px;resize:none;height:46px;line-height:1.5;}
+.msg-tools{display:flex;gap:2px;padding:8px 12px;align-items:center;}
+.msg-tool{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:14px;cursor:pointer;transition:color 0.2s;border-radius:2px;}
+.msg-tool:hover{color:var(--gold);background:rgba(201,169,110,0.08);}
+.msg-send{width:36px;height:36px;background:var(--gold);border:none;color:var(--black);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:5px;transition:all 0.2s;}
+.msg-send:hover{background:#E8D5A3;}
+
+/* Community Sidebar */
+.cs-title{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:12px;}
+.cs-section{margin-bottom:24px;}
+.online-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.online-item:last-child{border-bottom:none;}
+.online-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--black);position:relative;flex-shrink:0;}
+.online-dot{position:absolute;bottom:1px;right:1px;width:8px;height:8px;background:var(--green);border-radius:50%;border:1.5px solid var(--dark);}
+.online-name{font-size:12px;color:var(--text-mid);}
+.online-status{font-size:10px;color:var(--text-dim);}
+.event-item{padding:12px;background:var(--dark3);border:1px solid rgba(201,169,110,0.08);margin-bottom:10px;cursor:pointer;transition:all 0.2s;}
+.event-item:hover{border-color:rgba(201,169,110,0.3);}
+.event-date{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.event-name{font-size:13px;color:var(--text);font-weight:400;margin-bottom:2px;}
+.event-meta{font-size:11px;color:var(--text-dim);}
+
+.fade-in{animation:fadeIn 0.45s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a class="logo-wrap" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none"><div style="width:32px;height:32px;background:#F5A623;display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-weight:700;font-size:16px;color:#000;clip-path:polygon(5px 0%,calc(100% - 5px) 0%,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0% calc(100% - 5px),0% 5px);box-shadow:0 0 12px rgba(245,166,35,0.4)">7</div><span style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;letter-spacing:0.1em;color:#E8F4FF">LI<span style=color:#F5A623>7</span>ERAE</span></a>
+    <div class="logo-sub">Portal</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Colaborador</div>
+    <a class="nav-item active" href="#" onclick="switchView('collab',this)"><span class="nav-icon">⬡</span> Meu Painel</a>
+    <a class="nav-item" href="#" onclick="switchView('community',this)"><span class="nav-icon">💬</span> Comunidade <span class="nav-badge">7</span></a>
+    <a class="nav-item" href="#"><span class="nav-icon">🎓</span> Meus Cursos</a>
+    <a class="nav-item" href="#"><span class="nav-icon">📊</span> Analytics</a>
+    <a class="nav-item" href="#"><span class="nav-icon">📁</span> Biblioteca</a>
+    <a class="nav-item" href="#"><span class="nav-icon">📋</span> Quizzes</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Conta</div>
+    <a class="nav-item" href="#"><span class="nav-icon">👤</span> Perfil</a>
+    <a class="nav-item" href="#"><span class="nav-icon">⚙️</span> Configurações</a>
+  </div>
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-user">
+    <div class="user-avatar">HM</div>
+    <div><div class="user-name">Prof. Hélio Matos</div><div class="user-role">Colaborador</div></div>
+  </div>
+</aside>
+
+<div class="main">
+
+  <!-- ── COLABORADOR VIEW ── -->
+  <div class="view active" id="view-collab">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Meu Painel de Colaborador</div>
+        <div class="topbar-sub">Olá, Hélio — você tem 2 cursos publicados</div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <button class="btn-new">＋ Novo Curso</button>
+    </div>
+    <div class="collab-content">
+      <div class="collab-grid fade-in">
+        <div class="collab-kpi"><div class="ck-label">Total de alunos</div><div class="ck-val">2.820</div><div class="ck-change up">↑ 14,2% este mês</div></div>
+        <div class="collab-kpi"><div class="ck-label">Aulas publicadas</div><div class="ck-val">47</div><div class="ck-change up">↑ 3 novas</div></div>
+        <div class="collab-kpi"><div class="ck-label">Avaliação média</div><div class="ck-val">4.9 ⭐</div><div class="ck-change up">Top 5% da plataforma</div></div>
+        <div class="collab-kpi"><div class="ck-label">Receita gerada</div><div class="ck-val" style="color:var(--gold)">R$ 64k</div><div class="ck-change up">↑ 22% total</div></div>
+      </div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:500;margin-bottom:16px;">Meus cursos</div>
+      <div class="courses-wrap fade-in">
+        <div class="collab-course-card">
+          <div class="ccc-top">
+            <div class="ccc-icon">⚖️</div>
+            <div><div class="ccc-title">Compliance & Governança para Associações</div><div class="ccc-meta">14 módulos · 6h 20min · Direito</div></div>
+            <div class="ccc-status"><span class="status-pill pub">Publicado</span></div>
+          </div>
+          <div class="ccc-stats">
+            <div class="ccc-stat"><span class="ccc-stat-n">1.840</span><span class="ccc-stat-l">Alunos</span></div>
+            <div class="ccc-stat"><span class="ccc-stat-n">4.9</span><span class="ccc-stat-l">Avaliação</span></div>
+            <div class="ccc-stat"><span class="ccc-stat-n">35%</span><span class="ccc-stat-l">Conclusão</span></div>
+          </div>
+          <div class="ccc-actions">
+            <button class="ccc-btn">✏ Editar</button>
+            <button class="ccc-btn">📊 Analytics</button>
+            <button class="ccc-btn">💬 Q&A (18)</button>
+          </div>
+        </div>
+        <div class="collab-course-card">
+          <div class="ccc-top">
+            <div class="ccc-icon">🌐</div>
+            <div><div class="ccc-title">Direito Digital & LGPD na Prática</div><div class="ccc-meta">10 módulos · 5h 30min · Direito</div></div>
+            <div class="ccc-status"><span class="status-pill rev">Em revisão</span></div>
+          </div>
+          <div class="ccc-stats">
+            <div class="ccc-stat"><span class="ccc-stat-n">980</span><span class="ccc-stat-l">Alunos</span></div>
+            <div class="ccc-stat"><span class="ccc-stat-n">4.9</span><span class="ccc-stat-l">Avaliação</span></div>
+            <div class="ccc-stat"><span class="ccc-stat-n">42%</span><span class="ccc-stat-l">Conclusão</span></div>
+          </div>
+          <div class="ccc-actions">
+            <button class="ccc-btn">✏ Editar</button>
+            <button class="ccc-btn">📊 Analytics</button>
+            <button class="ccc-btn">💬 Q&A (6)</button>
+          </div>
+        </div>
+        <!-- New -->
+        <div class="collab-course-card" style="border-style:dashed;border-color:rgba(201,169,110,0.2);cursor:pointer;display:flex;align-items:center;justify-content:center;min-height:180px;" onmouseover="this.style.borderColor='rgba(201,169,110,0.5)'" onmouseout="this.style.borderColor='rgba(201,169,110,0.2)'">
+          <div style="text-align:center;color:var(--text-dim);">
+            <div style="font-size:36px;margin-bottom:12px;opacity:0.5;">＋</div>
+            <div style="font-size:13px;font-weight:500;color:var(--text-mid);">Criar novo curso</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Comece do zero</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q&A Recentes -->
+      <div style="background:var(--dark2);border:1px solid rgba(201,169,110,0.1);padding:24px;margin-top:4px;" class="fade-in">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:500;">Perguntas recentes dos alunos</div>
+          <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);cursor:pointer;font-weight:500;">Ver todas →</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.015)'" onmouseout="this.style.background=''">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#8B6A35,#C9A96E);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0;">AN</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;color:var(--text);font-weight:400;margin-bottom:3px;">Como aplicar compliance em uma associação de pequeno porte?</div>
+              <div style="font-size:11px;color:var(--text-dim);">Ana Nóbrega · Aula 9 — Compliance & Governança · há 1h</div>
+            </div>
+            <div style="font-size:11px;color:var(--gold);font-weight:500;flex-shrink:0;align-self:center;">Responder →</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.015)'" onmouseout="this.style.background=''">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2E6B3E,#4CAF7D);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0;">JM</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;color:var(--text);font-weight:400;margin-bottom:3px;">Qual a diferença entre compliance e auditoria interna?</div>
+              <div style="font-size:11px;color:var(--text-dim);">João Mendes · Aula 3 — Compliance & Governança · há 3h</div>
+            </div>
+            <div style="font-size:11px;color:var(--gold);font-weight:500;flex-shrink:0;align-self:center;">Responder →</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:14px 0;cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.015)'" onmouseout="this.style.background=''">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2C3E7A,#5B8DD9);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0;">LC</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;color:var(--text);font-weight:400;margin-bottom:3px;">O material do módulo 2 tem algum PDF para download?</div>
+              <div style="font-size:11px;color:var(--text-dim);">Luísa Carvalho · Aula 5 — Compliance & Governança · ontem</div>
+            </div>
+            <div style="font-size:11px;background:rgba(76,175,125,0.12);color:var(--green);font-weight:500;flex-shrink:0;align-self:center;padding:3px 10px;">Respondido ✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── COMUNIDADE VIEW ── -->
+  <div class="view" id="view-community">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Comunidade Li7erae</div>
+        <div class="topbar-sub">#compliance-direito · 847 membros</div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div style="font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:6px;"><span style="width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block;"></span>312 online agora</div>
+    </div>
+    <div class="community-layout">
+      <!-- Channel List -->
+      <div style="width:220px;min-width:220px;background:var(--dark);border-right:1px solid var(--gold-line);display:flex;flex-direction:column;overflow:hidden;">
+        <div class="comm-search">
+          <span style="color:var(--text-dim);font-size:12px;">🔍</span>
+          <input type="text" placeholder="Buscar canais...">
+        </div>
+        <div class="channels-list">
+          <div class="channel-group">
+            <div class="channel-group-title">Geral</div>
+            <div class="channel-item active"><span class="channel-hash">#</span><span class="channel-name">geral</span></div>
+            <div class="channel-item"><span class="channel-hash">#</span><span class="channel-name">apresentações</span><span class="channel-unread">3</span></div>
+            <div class="channel-item"><span class="channel-hash">#</span><span class="channel-name">vagas-oportunidades</span></div>
+          </div>
+          <div class="channel-group">
+            <div class="channel-group-title">Por área</div>
+            <div class="channel-item"><span class="channel-hash">#</span><span class="channel-name">compliance-direito</span><span class="channel-unread">7</span></div>
+            <div class="channel-item"><span class="channel-hash">#</span><span class="channel-name">gestao-lideranca</span></div>
+            <div class="channel-item"><span class="channel-hash">#</span><span class="channel-name">financas</span></div>
+            <div class="channel-item"><span class="channel-hash">#</span><span class="channel-name">tecnologia-lgpd</span><span class="channel-unread">2</span></div>
+          </div>
+          <div class="channel-group">
+            <div class="channel-group-title">Cursos</div>
+            <div class="channel-item"><span class="channel-hash">📚</span><span class="channel-name">compliance-gov</span></div>
+            <div class="channel-item"><span class="channel-hash">📚</span><span class="channel-name">planejamento-est</span></div>
+            <div class="channel-item"><span class="channel-hash">📚</span><span class="channel-name">oratoria</span></div>
+          </div>
+          <div class="channel-group">
+            <div class="channel-group-title">Eventos</div>
+            <div class="channel-item"><span class="channel-hash">🎙</span><span class="channel-name">webinars</span></div>
+            <div class="channel-item"><span class="channel-hash">🏆</span><span class="channel-name">desafios</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="community-main">
+        <div class="messages-area fade-in" id="messagesArea">
+          <div class="msg-date-divider"><span class="msg-date-text">Hoje</span></div>
+
+          <div class="msg-group">
+            <div class="msg-avatar" style="background:linear-gradient(135deg,#2C3E7A,#5B8DD9)">HM</div>
+            <div class="msg-content">
+              <div class="msg-header"><span class="msg-author">Prof. Hélio Matos</span><span class="msg-badge instructor">Instrutor</span><span class="msg-time">09:14</span></div>
+              <div class="msg-text">Bom dia a todos! 👋 Acabei de publicar o novo módulo de <strong>Canais de Denúncia</strong> no curso Compliance & Governança. Vejam as novidades e me digam o que acharam!</div>
+              <div class="msg-reactions">
+                <div class="reaction active">👍 <span>24</span></div>
+                <div class="reaction">🎉 <span>12</span></div>
+                <div class="reaction">🔥 <span>8</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="msg-group">
+            <div class="msg-avatar" style="background:linear-gradient(135deg,#8B6A35,#C9A96E)">AN</div>
+            <div class="msg-content">
+              <div class="msg-header"><span class="msg-author">Ana Nóbrega</span><span class="msg-time">09:32</span></div>
+              <div class="msg-text">Professor Hélio, já assisti a primeira aula do módulo. Excelente conteúdo! Tenho uma dúvida: no caso de associações pequenas, como estruturar um canal de denúncia sem custo elevado?</div>
+              <div class="msg-reactions">
+                <div class="reaction">👍 <span>6</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="msg-group">
+            <div class="msg-avatar" style="background:linear-gradient(135deg,#2C3E7A,#5B8DD9)">HM</div>
+            <div class="msg-content">
+              <div class="msg-header"><span class="msg-author">Prof. Hélio Matos</span><span class="msg-badge instructor">Instrutor</span><span class="msg-time">09:45</span></div>
+              <div class="msg-text">Ótima pergunta, Ana! Para associações de pequeno porte, uma boa alternativa é usar formulários anônimos como o Google Forms com e-mail destinatário externo, ou contratar ombudsman terceirizado. Vou adicionar isso nos materiais complementares 📎</div>
+              <div class="msg-reactions">
+                <div class="reaction active">❤️ <span>18</span></div>
+                <div class="reaction">💡 <span>9</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="msg-group">
+            <div class="msg-avatar" style="background:linear-gradient(135deg,#2E6B3E,#4CAF7D)">JM</div>
+            <div class="msg-content">
+              <div class="msg-header"><span class="msg-author">João Mendes</span><span class="msg-time">10:02</span></div>
+              <div class="msg-text">Aproveito para compartilhar esse artigo que li ontem — muito alinhado com o que estamos estudando: <a href="#">Compliance no Terceiro Setor (IBGC, 2025)</a></div>
+              <div class="msg-reactions">
+                <div class="reaction">📖 <span>5</span></div>
+                <div class="reaction">👍 <span>7</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="msg-group">
+            <div class="msg-avatar" style="background:linear-gradient(135deg,#2C3E7A,#5B8DD9)">LC</div>
+            <div class="msg-content">
+              <div class="msg-header"><span class="msg-author">Luísa Carvalho</span><span class="msg-badge mod">Moderadora</span><span class="msg-time">10:28</span></div>
+              <div class="msg-text">📢 Lembrete: Webinar ao vivo amanhã às 19h com o Prof. Hélio — <strong>"Compliance na Prática: Casos Reais de Associações"</strong>. Link de acesso será enviado por e-mail!</div>
+              <div class="msg-image">🎙️</div>
+              <div class="msg-reactions">
+                <div class="reaction active">🙋 <span>31</span></div>
+                <div class="reaction">🔥 <span>14</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="msg-group">
+            <div class="msg-avatar" style="background:linear-gradient(135deg,#5C2E00,#C9A96E)">RF</div>
+            <div class="msg-content">
+              <div class="msg-header"><span class="msg-author">Ricardo Faria</span><span class="msg-time">11:14</span></div>
+              <div class="msg-text">Confirmado! Estarei lá amanhã. Alguém do #gestao-liderança também está participando? Poderíamos criar um grupo de estudo depois do webinar 🤝</div>
+              <div class="msg-reactions">
+                <div class="reaction">👋 <span>8</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="message-input-wrap">
+          <div class="message-input-box">
+            <textarea class="msg-input" placeholder="Escreva uma mensagem em #geral..." rows="1" id="msgInput" onkeydown="handleMsg(event)"></textarea>
+            <div class="msg-tools">
+              <div class="msg-tool">😊</div>
+              <div class="msg-tool">📎</div>
+              <div class="msg-tool">🖼</div>
+            </div>
+            <button class="msg-send" onclick="sendMsg()">➤</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right sidebar -->
+      <div class="community-sidebar">
+        <div class="cs-section">
+          <div class="cs-title">Online agora</div>
+          <div class="online-item">
+            <div class="online-avatar" style="background:linear-gradient(135deg,#2C3E7A,#5B8DD9)">HM<div class="online-dot"></div></div>
+            <div><div class="online-name">Prof. Hélio Matos</div><div class="online-status">Instrutor · ativo</div></div>
+          </div>
+          <div class="online-item">
+            <div class="online-avatar" style="background:linear-gradient(135deg,#8B6A35,#C9A96E)">AN<div class="online-dot"></div></div>
+            <div><div class="online-name">Ana Nóbrega</div><div class="online-status">Estudando</div></div>
+          </div>
+          <div class="online-item">
+            <div class="online-avatar" style="background:linear-gradient(135deg,#2C3E7A,#5B8DD9)">LC<div class="online-dot"></div></div>
+            <div><div class="online-name">Luísa Carvalho</div><div class="online-status">Moderadora · ativa</div></div>
+          </div>
+          <div class="online-item">
+            <div class="online-avatar" style="background:linear-gradient(135deg,#2E6B3E,#4CAF7D)">JM<div class="online-dot" style="background:#C9A96E;"></div></div>
+            <div><div class="online-name">João Mendes</div><div class="online-status">Em aula</div></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:10px;cursor:pointer;">+ 308 outros online</div>
+        </div>
+        <div class="cs-section">
+          <div class="cs-title">Próximos eventos</div>
+          <div class="event-item">
+            <div class="event-date">Amanhã · 19h00</div>
+            <div class="event-name">Webinar: Compliance na Prática</div>
+            <div class="event-meta">Prof. Hélio Matos · Ao vivo</div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">12 mar · 10h00</div>
+            <div class="event-name">Grupo de Estudo: Liderança</div>
+            <div class="event-meta">Online · 24 inscritos</div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">18 mar · 14h00</div>
+            <div class="event-name">Workshop LGPD Avançado</div>
+            <div class="event-meta">Dra. Lívia Torres · Ao vivo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchView(v, el) {
+  if(el){event.preventDefault();document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));el.classList.add('active');}
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+}
+document.querySelectorAll('.channel-item').forEach(c=>c.addEventListener('click',function(){document.querySelectorAll('.channel-item').forEach(x=>x.classList.remove('active'));this.classList.add('active');}));
+
+function handleMsg(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function sendMsg(){
+  const input=document.getElementById('msgInput');
+  const text=input.value.trim();
+  if(!text)return;
+  const area=document.getElementById('messagesArea');
+  const msg=document.createElement('div');
+  msg.className='msg-group';
+  msg.style.animation='fadeIn 0.3s ease both';
+  msg.innerHTML=`
+    <div class="msg-avatar" style="background:linear-gradient(135deg,#2C3E7A,#5B8DD9)">HM</div>
+    <div class="msg-content">
+      <div class="msg-header"><span class="msg-author">Prof. Hélio Matos</span><span class="msg-badge instructor">Instrutor</span><span class="msg-time">agora</span></div>
+      <div class="msg-text">${text}</div>
+      <div class="msg-reactions"><div class="reaction">👍 <span>0</span></div></div>
+    </div>`;
+  area.appendChild(msg);
+  area.scrollTop=area.scrollHeight;
+  input.value='';
+}
+</script>
+</body>
+</html>

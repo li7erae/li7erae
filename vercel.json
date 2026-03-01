@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    { "source": "/login",      "destination": "/login.html" },
+    { "source": "/catalogo",   "destination": "/catalogo.html" },
+    { "source": "/admin",      "destination": "/dashboard-admin.html" },
+    { "source": "/area",       "destination": "/associado.html" },
+    { "source": "/cursos",     "destination": "/cursos.html" },
+    { "source": "/membros",    "destination": "/associados.html" },
+    { "source": "/financeiro", "destination": "/financeiro.html" },
+    { "source": "/perfil",     "destination": "/perfil.html" },
+    { "source": "/comunidade", "destination": "/comunidade.html" }
+  ]
+}
